@@ -49,8 +49,8 @@ This project has adopted the [deep to the bones Code of Conduct](#).
 For more information see the [Code of Conduct FAQ](#) or contact:
 
 * mouna@edu.dsti.instiute
-* andrea@edu.dsti.instiute
-* barthelemy-diomyaye.ngom@edu.dsti.instiute
+* andrea.sonnellini@edu.dsti.institute
+* barthelemy-diomaye.ngom@edu.dsti.institute
 
 
 ## Security issue notifications
