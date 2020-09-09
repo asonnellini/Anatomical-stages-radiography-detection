@@ -45,12 +45,12 @@ Looking at the existing issues is a great way to find something to contribute on
 
 
 ## Code of Conduct
-This project has adopted the [deep to the bones Code of Conduct](https://aws.github.io/code-of-conduct).
-For more information see the [Code of Conduct FAQ](https://aws.github.io/code-of-conduct-faq) or contact:
+This project has adopted the [deep to the bones Code of Conduct](#).
+For more information see the [Code of Conduct FAQ](#) or contact:
 
-mouna@edu.dsti.instiute
-andrea@edu.dsti.instiute
-barthelemy-diomyaye.ngom@edu.dsti.instiute
+* mouna@edu.dsti.instiute
+* andrea@edu.dsti.instiute
+* barthelemy-diomyaye.ngom@edu.dsti.instiute
 
 
 ## Security issue notifications
