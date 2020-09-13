@@ -1,0 +1,6 @@
+.*
+!.gitignore
+*lock*
+node_modules
+work_env
+*json*
