@@ -54,7 +54,7 @@ RUN cd /code/darknet && sed -i 's/GPU=0/GPU=1/; s/CUDNN=0/CUDNN=1/; s/CUDNN_HALF
 # To run YOLO training or detection, YOLO needs some config files:
 
 # - the yolo-obj.cfg file --> it contains the config of the YOLO NN
-	This file will be stored in the Docker Image within the path /code/darknet/cfg
+#	This file will be stored in the Docker Image within the path /code/darknet/cfg
 #	NOTE: if in future you will change the number of classes, you should change the content of yolo-obj.cfg
 # 	NOTE: if your training is slow, you can change in this file the value of batches
 
