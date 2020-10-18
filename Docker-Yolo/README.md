@@ -17,19 +17,19 @@
                 example
             
             1.  Docker-Yolo/VGGvsYolo-Annotations/outPut-VGG-2-Yolo-annotations/
-                1998\_AnteroPosterior\_supine.png
+                1998.png
             
             2.  Docker-Yolo/VGGvsYolo-Annotations/outPut-VGG-2-Yolo-annotations/
-                1998\_AnteroPosterior\_supine.txt
+                1998.txt
     
     3.  Generate a txt file that list the path (path within the Docker
         container) of for the
             images
         
         2.  Docker-Yolo/VGGvsYolo-Annotations/outPut-VGG-2-Yolo-annotations/
-            1998\_AnteroPosterior\_supine.txt
+            1998.txt
         
-        3.  Note: You will have to spit this text file to generate the
+        3.  Note: You will have to split this text file to generate the
             train.txt and test.txt files, each of them with the list of
             images (and their path on the Docker image) for train and
             test respectively
@@ -114,19 +114,7 @@
     
       - Eg. The structure on the S3 is going to be
         
-        \\---yolo-project/setupToStartYolo/
-        
-        | test.txt (path images for test)
-        
-        | train.txt (path images for train)
-        
-        |
-        
-        \+---pic.zip
-        
-        | \\---image1.png
-        
-        | \\---image1.txt
+        ![](.//media/image3.png)
 
 2.  Deploy an EC2 with the following setup:
     
@@ -152,7 +140,7 @@
         
           - You will finally have the following folders/files on the EC2
 
-![](.//media/image3.png)
+![](.//media/image4.png)
 
   - The docker image with YOLO will be available on the EC2
 
@@ -173,7 +161,7 @@
     
       - The setup shown below is in place
 
-![](.//media/image4.png)
+![](.//media/image5.png)
 
   - To ensure everything is fine you can try to run a test:
     
