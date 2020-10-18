@@ -1,0 +1,2 @@
+/code/darknet/build/darknet/x64/data/obj/1998.png
+/code/darknet/build/darknet/x64/data/obj/1999.png

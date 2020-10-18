@@ -1,0 +1,4 @@
+filename,file_size,file_attributes,region_count,region_id,region_shape_attributes,region_attributes
+1998_AnteroPosterior_supine.png,97506,"{}",3,0,"{""name"":""rect"",""x"":0,""y"":258,""width"":350,""height"":253}","{""HEAD"":{},""CHEST"":{},""ABDOMEN"":{},""PELVIS"":{""FRONT"":true},""SPINE"":{},""SHOULDER R "":{},""SHOULDER L"":{}}"
+1998_AnteroPosterior_supine.png,97506,"{}",3,1,"{""name"":""rect"",""x"":142,""y"":2,""width"":82,""height"":288}","{""HEAD"":{},""CHEST"":{},""ABDOMEN"":{},""PELVIS"":{},""SPINE"":{""FRONT"":true},""SHOULDER R "":{},""SHOULDER L"":{}}"
+1998_AnteroPosterior_supine.png,97506,"{}",3,2,"{""name"":""rect"",""x"":53,""y"":44,""width"":238,""height"":212}","{""HEAD"":{},""CHEST"":{},""ABDOMEN"":{""FRONT"":true},""PELVIS"":{},""SPINE"":{},""SHOULDER R "":{},""SHOULDER L"":{}}"
