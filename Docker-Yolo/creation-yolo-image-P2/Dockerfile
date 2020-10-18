@@ -80,11 +80,8 @@ COPY ./darknet /code/mioYolo/
 #			obj.data
 #			Yolo-Train.sh (script to launch automatically YOLO Training)
 
-# Let Yolo-Train.sh be an executable file
-RUN chmod +x Yolo-Train.sh
-
 # Copy the content of the folder /code/mioYolo/ into /code/darknet/
 RUN cp -r /code/mioYolo/* /code/darknet/
 
-
-
+# Let Yolo-Train.sh be an executable file
+RUN chmod +x /code/darknet/obj-config-files/Yolo-Train.sh
