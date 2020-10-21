@@ -1,0 +1,87 @@
+########################### UBUNTU INSTALLATION ########################### 
+
+# Use the UBUNTU image provided by NVIDIA, with the NVIDIA drivers needed to use GPU already installed
+FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+
+#Copy the file keyboard (located in the directory from which you are running the docker build command) to the folder /etc/default/keyboard in the docker image
+COPY ./keyboard /etc/default/keyboard
+
+# create and enter the folder code - every RUN command will now on be executed from within the /code folder;
+# if you want to execute a command from another folder, make sure to do something like "RUN cd <newFolder> && <newCommand>"
+WORKDIR /code
+
+#Ensure no prompts appear during the image creation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install packages
+RUN  apt-get update && apt-get install -y \
+	sudo\
+	--reinstall keyboard-configuration\
+	wget\
+	python3-pip\
+    	python3-opencv\
+	libopencv-dev\
+	libomp-dev\
+	python-qt4 \
+    	python-pyside \
+    	python3-pip \
+    	python3-pyqt5\
+	nano\
+	git\
+    	cmake\
+    	zip
+	
+RUN pip3 install\
+	scikit-learn\
+	tqdm\
+	numpy\
+	jupyter\
+	pandas
+
+########################### YOLO DARKNET INSTALLATION ########################### 
+#Clone the YOLO Repository
+RUN sudo git clone https://github.com/AlexeyAB/darknet.git
+
+#Download the pre-trained weights
+RUN wget https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.conv.137
+
+# Copy the weights into the darknet folder
+RUN mv yolov4.conv.137 /code/darknet/
+
+# Amend the Makefile to set various flags to enable GPU computing and then compile - this will return the darknet executable
+RUN cd /code/darknet && sed -i 's/GPU=0/GPU=1/; s/CUDNN=0/CUDNN=1/; s/CUDNN_HALF=0/CUDNN_HALF=1/; s/OPENCV=0/OPENCV=1/; s/AVX=0/AVX=1/; s/OPENMP=0/OPENMP=1/; s/LIBSO=0/LIBSO=1/' Makefile && make
+
+# To run YOLO training or detection, YOLO needs some config files:
+
+# - the yolo-obj.cfg file --> it contains the config of the YOLO NN
+#	This file will be stored in the Docker Image within the path /code/darknet/cfg
+#	NOTE: if in future you will change the number of classes, you should change the content of yolo-obj.cfg
+# 	NOTE: if your training is slow, you can change in this file the value of batches
+
+# - obj.name --> it contains the name of classes 
+# - obj.name --> it contains info about path for images and backup folder (where weights are saved) 
+#  	Both obj.name and obj.data have to be stored in the docker folder /code/darknet/obj-config-files
+
+# To store the above files in the targeted locations: 
+
+# Create a folder mioYolo
+RUN mkdir /code/mioYolo
+
+# Copy the folder darknet (that has the yolo-obj.cfg, obj.name, obj.data in the correct folders - see below) to the docker folder /code/mioYolo/
+COPY ./darknet /code/mioYolo/
+
+# darknet folder must have the following tree:
+#	darknet
+#		cfg
+#			yolo-obj.cfg file
+#		
+#		obj-config-files
+#			obj.name
+#			obj.data
+#			Yolo-Train.sh (script to launch automatically YOLO Training)
+
+# Copy the content of the folder /code/mioYolo/ into /code/darknet/
+RUN cp -r /code/mioYolo/* /code/darknet/
+
+# Let Yolo-Train.sh be an executable file
+RUN chmod +x /code/darknet/obj-config-files/Yolo-Train.sh
