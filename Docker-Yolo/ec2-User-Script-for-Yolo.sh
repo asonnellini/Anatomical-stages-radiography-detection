@@ -21,7 +21,7 @@ sudo unzip $(ls /home/ubuntu/exchange/*zip) -d /home/ubuntu/exchange/images/
 sudo chmod -R 777 /home/ubuntu/exchange/
 sudo touch /home/ubuntu/run-Yolo-Docker.sh
 # Create the script to run the docker image loading the folder "exchange" as a volume on the container
-echo "sudo docker run -it -v ~/exchange:/exchange asonnellini/yolo-custom-folders" >> /home/ubuntu/run-Yolo-Docker.sh
+echo "sudo docker run -it -p 80:8090 --gpus all -v ~/exchange:/exchange asonnellini/yolo-custom-folders" >> /home/ubuntu/run-Yolo-Docker.sh
 sudo chmod +x /home/ubuntu/run-Yolo-Docker.sh
 # Download the docker images for yolo
 sudo docker pull asonnellini/yolo-custom-folders
