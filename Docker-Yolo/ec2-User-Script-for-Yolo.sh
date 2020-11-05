@@ -12,7 +12,7 @@ sudo sh /home/ubuntu/dockerInstall/get-docker.sh
 sudo mkdir /home/ubuntu/exchange
 # Back up directory will host the weights saved by yolo
 sudo mkdir /home/ubuntu/exchange/backup
-# images directory will host the weights saved by yolo
+# images directory will host the images that yolo will train on
 sudo mkdir /home/ubuntu/exchange/images
 # Download within the folder exchange from S3 yolo-project bucket the zipped images&txt files for yolo
 sudo aws s3 sync s3://yolo-project/setupToStartYolo/ /home/ubuntu/exchange
@@ -21,7 +21,9 @@ sudo unzip $(ls /home/ubuntu/exchange/*zip) -d /home/ubuntu/exchange/images/
 sudo chmod -R 777 /home/ubuntu/exchange/
 sudo touch /home/ubuntu/run-Yolo-Docker.sh
 # Create the script to run the docker image loading the folder "exchange" as a volume on the container
-echo "sudo docker run -it -p 80:8090 --gpus all -v ~/exchange:/exchange asonnellini/yolo-custom-folders" >> /home/ubuntu/run-Yolo-Docker.sh
+echo "sudo docker run -it -p 8090:8090 --gpus all -v ~/exchange:/exchange asonnellini/yolo-custom-folders" >> /home/ubuntu/run-Yolo-Docker.sh
 sudo chmod +x /home/ubuntu/run-Yolo-Docker.sh
-# Download the docker images for yolo
+# Download the docker images for yolo training
 sudo docker pull asonnellini/yolo-custom-folders
+# Download the docker images for yolo training + flask
+sudo docker pull asonnellini/yolo-custom-folders-flask

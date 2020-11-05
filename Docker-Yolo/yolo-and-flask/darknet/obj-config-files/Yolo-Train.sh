@@ -1,0 +1,1 @@
+/code/darknet/darknet detector train /code/darknet/obj-config-files/obj.data /code/darknet/cfg/yolo-obj.cfg /code/darknet/yolov4.conv.137 -dont_show -mjpeg_port 8090 -map
