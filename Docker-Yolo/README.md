@@ -297,7 +297,7 @@ To use it:
                 "toDetect", "imgFileName":
                 "1998\_AnteroPosterior\_supine.png",
                 "bucketDestination": "yolo-project", "bucketDestFolder":
-                "detected"}'
+                "detected"}' http://\<private IP of EC2\>:8090/
                 
                 Where for the json all the following mandatory
                 attributes must be specified:
@@ -315,7 +315,9 @@ To use it:
                 the post-detection image
             
               - bucketDestFolder: name of the folder in the bucket which
-                will host the post-detection image
+                will host the post-detection image; if the file is not
+                in any folder this attribute must be set to empty string
+                “”
     
       - if the detection is executed successfully, the flask API will
         reply to the POST message with details about the path where the
