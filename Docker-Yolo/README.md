@@ -244,6 +244,28 @@ To use it:
     
       - \>\> docker pull asonnellini/yolo-custom-folders-flask
 
+  - Start an EC2 instance according to the below template:
+    
+      - EC2 Type:
+        
+          - For production like deployment ==\> p2.xlarge
+        
+          - For testing purpose (e.g. without performing the detection,
+            so no need of GPUs) ==\> t2.micro
+    
+      - AMI:
+        
+          - Deep Learning AMI (Ubuntu 18.04) Version 36.0 ==\>
+            ami-01bd6a1621a6968d7
+    
+      - IAM Role:
+        
+          - Grant full access to S3 Buckets
+    
+      - Sec Group:
+        
+          - Ensure communications are allowed for port 8090
+
   - Run the docker container with the following command:
     
       - \>\> sudo docker run -d --rm -p 8090:8090 --gpus all -v
