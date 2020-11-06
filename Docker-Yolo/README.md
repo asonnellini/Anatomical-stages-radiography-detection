@@ -146,14 +146,27 @@
 
 <!-- end list -->
 
-  - Run the Docker image executing the following command:
+  - Run the Docker image executing the following command – see the next
+    point for the detached mode:
     
-      - \>\> sudo docker run -it --gpus all -v ~/exchange:/exchange
-        asonnellini/yolo-custom-folders
+      - \>\> sudo docker run -it -p 80:8090 --gpus all -v
+        ~/exchange:/exchange asonnellini/yolo-custom-folders
         
-          - Note the above command ensures the Docker Image can use all
-            the gpus and that the folder ~/exchange on the EC2 is shared
-            with the folder /exchange on the Docker Image
+          - Given that the container was run with -i and -t, you can
+            detach from it and leave it running using the CTRL-p CTRL-q
+            key sequence
+            
+              - To re-attach/re-enter the container:
+                
+                  - \>\> sudo docker attach ddc081f03827
+                
+                  - \>\> sudo docker container ps
+        
+          - \--gpus all : ensures the Docker Image can use all the gpus
+            and that the folder ~/exchange on the EC2 is shared with the
+            folder /exchange on the Docker Image
+        
+          - \-p 80:8090 maps the container port 8090 to the host 80
 
   - At this point in time:
     
@@ -197,7 +210,7 @@ From “inside” the Docker Image:
     
       - \>\> nvidia-smi
 
-# Predict with YOLOs
+# Predict with YOLO
 
 From “inside” the Docker image:
 
@@ -216,3 +229,155 @@ From “inside” the Docker image:
         /exchange/backup/yolo-obj\_last.weights
         /exchange/images/9732\_AnteroPosterior\_unspecified.png -thresh
         0.25 -ext\_output \> /exchange/result.txt
+
+# Integrate YOLO with a FLASK API and trigger the detection via POST
+
+To integrate flask in the docker image created for yolo, we created a
+new docker image asonnellini/yolo-custom-folders**-flask.**
+
+The Docker image asonnellini/yolo-custom-folders**-flask** is identical
+to asonnellini/yolo-custom-folders but includes a flask API.
+
+To use it:
+
+  - Download the docker image asonnellini/yolo-custom-folders-flask
+    
+      - \>\> docker pull asonnellini/yolo-custom-folders-flask
+
+  - Run the docker container with the following command:
+    
+      - \>\> sudo docker run -d --rm -p 8090:8090 --gpus all -v
+        ~/exchange:/exchange yolo-custom-folders-flask python3
+        darknet/flask-API/flask\_api.py
+    
+      - The above command
+        
+          - runs the container in detached mode
+        
+          - maps port 8090 on the EC2 host to container port 8090 –
+            please check out this article
+            https://pythonspeed.com/articles/docker-connection-refused/
+            for some additional info about what’s needed to successfully
+            run the flask API on docker
+        
+          - runs the script flask\_api.py (inside the container) which
+            is the script that has the flask API
+
+  - The flask API implemented in the container
+    
+      - Listens to all the container network interfaces and port 8090
+    
+      - exposes 1 endpoint / and 2 methods, namely GET and POST:
+        
+          - POST + / = triggers the detection on an image saved in the
+            S3 bucket
+        
+          - GET + / = returns just some info about the flask API
+    
+      - Specifically, to run a detection on an image, the following has
+        to be setup:
+        
+          - Ensure the EC2 where the docker container is running has:
+            
+              - an IAM that grants full access to S3 buckets
+            
+              - a Security Group that allows traffic on the port 8090
+        
+          - An S3 bucket that saves the image on which the detection has
+            to be run
+        
+          - Another S3 bucket available to store the image upon
+            detection
+        
+          - Run a curl command toward the flask API endpoint / passing
+            information in a json, e.g.:
+            
+              - \>\> curl -H "Content-Type: application/json" -X POST -d
+                '{"bucketName": "yolo-project", "folderBucket":
+                "toDetect", "imgFileName":
+                "1998\_AnteroPosterior\_supine.png",
+                "bucketDestination": "yolo-project", "bucketDestFolder":
+                "detected"}' http://\<private IP of EC2\>:8090/
+                
+                Where for the json all the following mandatory
+                attributes must be specified:
+            
+              - bucketName: name of the S3 bucket that hosts the image
+                on which detection has to be run
+            
+              - folderBucker: folder in the S3 bucket where the file is
+                placed; if the file is not in any folder this attribute
+                must be set to empty string “”
+            
+              - imgFileName: name of the image saved on the S3 bucket
+            
+              - bucketDestination: name of the bucket which will host
+                the post-detection image
+            
+              - bucketDestFolder: name of the folder in the bucket which
+                will host the post-detection image; if the file is not
+                in any folder this attribute must be set to empty string
+                “”
+    
+      - if the detection is executed successfully, the flask API will
+        reply to the POST message with details about the path where the
+        post-detection image is stored on an S3 :
+        
+        { "Outcome": "OK",
+        
+        "destBucket": "yolo-project",
+        
+        "destBucketFolder": "detected",
+        
+        "destFileName": "123-det\_1998\_AnteroPosterior\_supine.png"
+        
+        }
+
+Note: at this stage the detection is not performed for real, the flask
+API currently mimics just the mechanism of getting an image from an S3
+bucket and copy another image on another S3 bucket as per the
+information passed via the POST command.
+
+The new image asonnellini/yolo-custom-folders-flask was created starting
+from the same dockerfile used for image asonnellini/yolo-custom-folders,
+adding to it the following:
+
+  - python modules:
+    
+      - flask\_RESTfull
+    
+      - boto3
+
+  - Inside the folder /code/darknet a folder named flasked\_API that has
+    the files
+    
+      - flask\_api.py – has the flask API code
+    
+      - uploadDownload.py - has some functions used by the flask API
+        code
+    
+      - darknet.py and darknet\_images.py – has some functions to call
+        the detection
+
+All the above files can be found in the folder yolo-and-flask on this
+github page.
+
+Points yet to be implemented:
+
+  - implement the detection (you will have to modify flask API and save
+    in the docker image the final weights)
+
+  - implement a mechanism that allows to have unique id for each image
+    
+      - to consider the case for example where we have
+        
+          - multiple docker containers running detection and all of them
+            saving images on the same S3 bicket in the same folders
+            
+              - it would be necessary to mark each image from each
+                container with an Id that is made of
+                
+                  - unique Id of the docker container
+                
+                  - unique Id produced by one container for its own
+                    images
