@@ -25,7 +25,9 @@ $ aws configure
 
 ## Deployment
 
-`git clone <GIT_HUB_REPOSITORY>`
+```
+git clone https://github.com/asonnellini/Anatomical-stages-radiography-detection.git
+```
 
 Move to *iac* folder 
 
