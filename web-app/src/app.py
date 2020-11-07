@@ -1,10 +1,10 @@
 from flask import Flask, request, session, redirect, url_for, render_template, flash
-from flask_cors import CORS
+#from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app)
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+#CORS(app)
+#cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 app.secret_key = "super secret key"

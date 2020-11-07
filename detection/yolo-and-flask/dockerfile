@@ -29,14 +29,17 @@ RUN  apt-get update && apt-get install -y \
 	nano\
 	git\
     	cmake\
-    	zip
+    	zip\
+    	awscli
 	
 RUN pip3 install\
 	scikit-learn\
 	tqdm\
 	numpy\
 	jupyter\
-	pandas
+	pandas\
+	Flask-RESTful\
+	boto3
 
 ########################### YOLO DARKNET INSTALLATION ########################### 
 #Clone the YOLO Repository
@@ -67,6 +70,15 @@ RUN cd /code/darknet && sed -i 's/GPU=0/GPU=1/; s/CUDNN=0/CUDNN=1/; s/CUDNN_HALF
 # Create a folder mioYolo
 RUN mkdir /code/mioYolo
 
+# Create directory images
+RUN mkdir /code/images
+
+# Create a folder for images to be detected
+RUN mkdir /code/images/toDetect
+
+# Create a folder for output image of detection
+RUN mkdir /code/images/detected
+
 # Copy the folder darknet (that has the yolo-obj.cfg, obj.name, obj.data in the correct folders - see below) to the docker folder /code/mioYolo/
 COPY ./darknet /code/mioYolo/
 
@@ -85,3 +97,6 @@ RUN cp -r /code/mioYolo/* /code/darknet/
 
 # Let Yolo-Train.sh be an executable file
 RUN chmod +x /code/darknet/obj-config-files/Yolo-Train.sh
+
+CMD ["Hello from yolo-app container!"]
+
