@@ -93,7 +93,7 @@ class RunDetection(Resource):
 		else:
 			print("The file does not exist")
 
-		return {'Outcome': 'OK', 'destBucket': destinationBucket, 'destBucketFolder': destinationBucketFolder, 'destFileName': EC2FinalImg}, 201
+		return {'status_code': 201 , 'destBucket': destinationBucket, 'destBucketFolder': destinationBucketFolder, 'destFileName': EC2FinalImg}, 201
 
 api.add_resource(RunDetection, '/')
 
