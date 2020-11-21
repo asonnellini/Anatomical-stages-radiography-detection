@@ -20,8 +20,9 @@ sudo unzip $(ls /home/ubuntu/exchange/*zip) -d /home/ubuntu/exchange/images/
 # Give permissions to all users on all directories and files in the exchange folder
 sudo chmod -R 777 /home/ubuntu/exchange/
 sudo touch /home/ubuntu/run-Yolo-Docker.sh
+sudo chmod -R 777 /home/ubuntu/run-Yolo-Docker.sh
 # Create the script to run the docker image loading the folder "exchange" as a volume on the container
-echo "sudo docker run -it -p 8090:8090 --gpus all -v ~/exchange:/exchange asonnellini/yolo-custom-folders" >> /home/ubuntu/run-Yolo-Docker.sh
+echo "sudo docker run -it -p 8090:8090 --gpus all -v ~/exchange:/exchange asonnellini/yolo-custom-folders-flask" >> /home/ubuntu/run-Yolo-Docker.sh
 sudo chmod +x /home/ubuntu/run-Yolo-Docker.sh
 # Download the docker images for yolo training
 sudo docker pull asonnellini/yolo-custom-folders
