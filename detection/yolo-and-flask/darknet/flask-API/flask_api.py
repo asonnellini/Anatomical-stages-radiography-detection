@@ -23,11 +23,12 @@ class RunDetection(Resource):
 		#parse the json
 		bucket = input_json["bucketName"]
 		folderBucket =  input_json["folderBucket"]
-		fileName = input_json["imgFileName"]
+		fileName = input_json["imgFileName"] # key
 		destinationBucket = input_json["bucketDestination"]
 		destinationBucketFolder = input_json["bucketDestFolder"]
 		
 		# if the file on S3 is not stored on any S3 folder, then pathInBucket is just the file name
+		# Stored on root s3?
 		if folderBucket == "":
 			pathInBucket = fileName
 		
@@ -93,7 +94,9 @@ class RunDetection(Resource):
 		else:
 			print("The file does not exist")
 
-		return {'Outcome': 'OK', 'destBucket': destinationBucket, 'destBucketFolder': destinationBucketFolder, 'destFileName': EC2FinalImg}, 201
+		# return {'Outcome': 'OK', 'destBucket': destinationBucket, 'destBucketFolder': destinationBucketFolder, 'destFileName': EC2FinalImg}, 201
+
+		return {'status_code': 201, 'destBucket': destinationBucket, 'destBucketFolder': destinationBucketFolder, 'destFileName': EC2FinalImg}
 
 api.add_resource(RunDetection, '/')
 
