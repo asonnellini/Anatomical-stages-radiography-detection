@@ -133,8 +133,8 @@ scan of the patient that is take to allow the AEC to infers the optimal
 intensity. These preliminary radiography scans are the so-called “scout
 images”. Scout images are used by the AEC under the assumption that the
 patient is well positioned in the CT Scan. Of course, in general this
-might not be the case. Generally speaking, CT technicians can apply the
-below procedure to address this issue:
+might not be the case. CT technicians can apply the below procedure to
+address this issue:
 
 1)  Place the patient in the CT scan and perform a preliminary scout
     image of the patient – based on this image, the CT technician
@@ -341,10 +341,11 @@ The front-end:
 
   - Is an HTML page (home.html) hosted on an EC2 t2.micro
 
-  - The same EC2 hosts a Flask API (see the file app.py)
-
-  - The HTML page makes post calls to the Front-End Flask API triggering
-    the actions shown in the above diagram
+  - The same EC2 hosts a Flask API (see the file app.py) that is
+    connected to the HTML:
+    
+      - The HTML page makes post calls to the Front-End Flask API
+        triggering the actions shown in the above diagram
 
 The back-end:
 
@@ -361,15 +362,15 @@ back-end.
 
 The above architecture allows to:
 
-  - Decouple the front-end from the back-end
+  - **Decouple the front-end from the back-end **
     
       - This allowed us to work almost independently on the front-end
         and the back-end without having integration problems
 
-  - Easily generate a presigned URL from the S3 bucket
+  - **Easily generate a presigned URL from the S3 bucket**
 
-  - Pave the way toward a more sophisticated and “production-ready”
-    environment like the one exposed in section Planned Improvements
+  - **Pave the way toward a more sophisticated and “production-ready”
+    environment** like the one exposed in section Planned Improvements
 
 # Examples of detections
 
@@ -423,7 +424,7 @@ to enhance the current POC.
 **Important:** It is important to remark that the improvements 6 and 7
 would allow to:
 
-  - Further decouple the front-end from the back-end:
+  - **Further decouple the front-end from the back-end**:
     
       - Any already existing solutions can integrate the back-end of our
         application just implementing a simple logic to communicate with
@@ -433,8 +434,8 @@ would allow to:
         API GTW, so changes done on one “side” of the application will
         not directly impact the other “side”
 
-  - Increase the Scalability of the solution to manage high number of
-    requests
+  - **Increase the Scalability of the solution** to manage high number
+    of requests
 
 # Issues experienced and their resolution
 
