@@ -86,7 +86,7 @@ def upload_file(filePath, file_name, bucket, object_name=None):
 	fileToUpload = os.path.join(filePath,file_name)
 	
 	try:
-		response = s3_client.upload_file(fileToUpload, bucket, object_name)
+		response = s3_client.upload_file(fileToUpload, bucket, object_name, ExtraArgs={'ACL':'bucket-owner-full-control'})
 	
 	except ClientError as e:
 		logging.error(e)
