@@ -5,6 +5,8 @@ import uploadDownload as ud
 import os
 from shutil import copyfile
 
+import detect2
+
 app = Flask(__name__)
 api = Api(app)
 
@@ -53,17 +55,16 @@ class RunDetection(Resource):
 
 		######### Run the detection #########
 
-		# TBD
-
 		# Path where the image outputted by the detection will be stored on the EC2
 		EC2pathFinalImg = "/code/images/detected"
 
                 # Name of the image file outputted by the detection
-		EC2FinalImg = "123-det_" + fileName
+		EC2FinalImg = "detected_" + fileName
 
-		# This mimic the creation of the output image
-		copyfile(EC2path + "/" + EC2FileName, EC2pathFinalImg + "/" + EC2FinalImg)
+		# perform the detection and save the ouput image into EC2pathFinalImg + "/" + EC2FinalImg
+		detect2.detectImg(EC2path + "/" + EC2FileName, EC2pathFinalImg + "/" + EC2FinalImg)
 
+		#upon detection, remove the input image
 		if os.path.exists(os.path.join(EC2path, EC2FileName)):
 			os.remove(os.path.join(EC2path, EC2FileName))
 		else:
@@ -87,13 +88,14 @@ class RunDetection(Resource):
 			return {'Outcome': uplErr }, 201
 		
 		print("Upload Succesful")
-
+		
+		# upon upload, delete the detected image
 		if os.path.exists(os.path.join(EC2pathFinalImg, EC2FinalImg)):
 			os.remove(os.path.join(EC2pathFinalImg, EC2FinalImg))
 		else:
 			print("The file does not exist")
 
-		return {'Outcome': 'OK', 'destBucket': destinationBucket, 'destBucketFolder': destinationBucketFolder, 'destFileName': EC2FinalImg}, 201
+		return {'status_code': '201', 'destBucket': destinationBucket, 'destBucketFolder': destinationBucketFolder, 'destFileName': EC2FinalImg} #, 201
 
 api.add_resource(RunDetection, '/')
 

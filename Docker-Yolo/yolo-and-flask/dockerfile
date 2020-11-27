@@ -14,9 +14,9 @@ WORKDIR /code
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install packages
+# In this version of the dockerfile we removed the line --reinstall keyboard-configuration\ which was causing some errors
 RUN  apt-get update && apt-get install -y \
 	sudo\
-	--reinstall keyboard-configuration\
 	wget\
 	python3-pip\
     	python3-opencv\
@@ -24,7 +24,6 @@ RUN  apt-get update && apt-get install -y \
 	libomp-dev\
 	python-qt4 \
     	python-pyside \
-    	python3-pip \
     	python3-pyqt5\
 	nano\
 	git\
@@ -40,6 +39,12 @@ RUN pip3 install\
 	pandas\
 	Flask-RESTful\
 	boto3
+
+# Needed to install the latest version of opencv-python
+RUN pip3 install --upgrade pip
+
+# Need latest version of opencv-python in order to overcome a bug with openCV version 3.2
+RUN pip3 install opencv-python
 
 ########################### YOLO DARKNET INSTALLATION ########################### 
 #Clone the YOLO Repository
@@ -98,3 +103,5 @@ RUN cp -r /code/mioYolo/* /code/darknet/
 # Let Yolo-Train.sh be an executable file
 RUN chmod +x /code/darknet/obj-config-files/Yolo-Train.sh
 
+# Copy the library libdarknet.so into the working directory
+RUN cp /code/darknet/libdarknet.so /code/
