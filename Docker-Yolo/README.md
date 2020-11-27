@@ -128,11 +128,11 @@
       - Public IP: make sure to be able to SSH into the machine
     
       - Execute the User Data Script
-        Docker-Yolo/ec2-User-Script-for-Yolo.sh
+        Docker-Yolo/ec2-User-Script-for-Yolo-training.sh
         
           - Note: we are assuming that a docker image with YOLO named is
             available in one Docker repository – the script refers
-            specifically to the image asonnellini/yolo-custom-folders,
+            specifically to the image asonnellini/yolo-custom-folders-flask_v2,
             you should change it to point it to the image of your
             interest
     
@@ -150,7 +150,7 @@
     point for the detached mode:
     
       - ``` sudo docker run -it -p 80:8090 --gpus all -v
-        ~/exchange:/exchange asonnellini/yolo-custom-folders ```
+        ~/exchange:/exchange asonnellini/yolo-custom-folders-flask_v2 ```
         
           - Given that the container was run with -i and -t, you can
             detach from it and leave it running using the CTRL-p CTRL-q
@@ -233,16 +233,16 @@ From “inside” the Docker image:
 # Integrate YOLO with a FLASK API and trigger the detection via POST
 
 To integrate flask in the docker image created for yolo, we created a
-new docker image asonnellini/yolo-custom-folders**-flask.**
+new docker image asonnellini/yolo-custom-folders**-flask_v2.**
 
-The Docker image asonnellini/yolo-custom-folders**-flask** is identical
+The Docker image asonnellini/yolo-custom-folders**-flask_v2** is identical
 to asonnellini/yolo-custom-folders but includes a flask API.
 
 To use it:
 
-  - Download the docker image asonnellini/yolo-custom-folders-flask
+  - Download the docker image asonnellini/yolo-custom-folders-flask_v2
     
-      - ``` docker pull asonnellini/yolo-custom-folders-flask ```
+      - ``` docker pull asonnellini/yolo-custom-folders-flask_v2 ```
 
   - Start an EC2 instance according to the below template:
     
@@ -360,7 +360,7 @@ API currently mimics just the mechanism of getting an image from an S3
 bucket and copy another image on another S3 bucket as per the
 information passed via the POST command.
 
-The new image asonnellini/yolo-custom-folders-flask was created starting
+The new image asonnellini/yolo-custom-folders-flask_v2 was created starting
 from the same dockerfile used for image asonnellini/yolo-custom-folders,
 adding to it the following:
 
