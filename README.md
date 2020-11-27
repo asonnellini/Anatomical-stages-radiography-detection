@@ -475,19 +475,19 @@ This section describes the main issues we faced when building the POC.
 
   - **Issue:** Calls to the flask API running on the docker container
     seems not to hit the flask API itself, even though the docker
-    container is run with the flag \`\`\` -p 8090:8090 \`\`\`
+    container is run with the flag ``` -p 8090:8090 ```
     
       - **Resolution:** change the flask\_api.py from:
         
-          - \`\`\` if \_\_name\_\_ == '\_\_main\_\_' :
+          - ``` if \_\_name\_\_ == '\_\_main\_\_' :
             
-            app.run(debug = True) \`\`\`
+            app.run(debug = True) ```
             
             TO:
         
-          - \`\`\` if \_\_name\_\_ == '\_\_main\_\_' :
+          - ``` if \_\_name\_\_ == '\_\_main\_\_' :
             
-            app.run(host = '0.0.0.0', port = 8090, debug = True) \`\`\`
+            app.run(host = '0.0.0.0', port = 8090, debug = True) ```
 
   - **Issue**: Unable to create and upload objects from an EC2 belonging
     to account A to a non-public S3 bucket that belongs to account B
@@ -497,7 +497,7 @@ This section describes the main issues we faced when building the POC.
           - Setup an IAM role for the EC2 on account A such that grants
             access to S3 buckets, for example:
             
-              - \`\`\`
+              - ```
                 
                 {
                 
@@ -519,12 +519,12 @@ This section describes the main issues we faced when building the POC.
                 
                 }
                 
-                \`\`\`
+                ```
         
           - Setup a policy on the bucket of account B to allow the role
             from account A to access and operate on the bucket
         
-          - \`\`\`
+          - ```
             
             {
             
@@ -553,7 +553,7 @@ This section describes the main issues we faced when building the POC.
             
             }
             
-            \`\`\`
+            ```
 
   - **Issue:** Unable to create a “working” presigned URL using a Lambda
     function of the account B for an object uploaded to an S3 bucket
@@ -564,15 +564,15 @@ This section describes the main issues we faced when building the POC.
           - upload objects setting the flag 'ACL' =
             'bucket-owner-full-control', e.g.:
             
-              - \`\`\` s3\_client = boto3.client('s3')
+              - ``` s3\_client = boto3.client('s3')
             
               - s3\_client.upload\_file(fileToUpload, bucketName,
                 object\_name,
-                ExtraArgs={'ACL':'bucket-owner-full-control'}) \`\`\`
+                ExtraArgs={'ACL':'bucket-owner-full-control'}) ```
         
           - Set the bucket policy:
             
-              - \`\`\`
+              - ```
                 
                 {
                 
@@ -614,7 +614,7 @@ This section describes the main issues we faced when building the POC.
                 
                 }
                 
-                \`\`\`
+                ```
 
   - **Issue**: If we trigger a detection using the original darknet.py
     and darknet\_image.py files from the official github repository, the
@@ -636,16 +636,16 @@ This section describes the main issues we faced when building the POC.
   - **Issue**: when starting the docker container along with the flask
     api from the below command line
     
-    \`\`\` sudo docker run -d --rm -p 8090:8090 --gpus all -v
+    ``` sudo docker run -d --rm -p 8090:8090 --gpus all -v
     ~/exchange:/exchange asonnellini/yolo-custom-folders-flask\_v2
-    python3 darknet/flask-API/flask\_api.py \`\`\`
+    python3 darknet/flask-API/flask\_api.py ```
     
     We received an error related to missing libdarknet.so even though
     this library was already in the folder darknet/flask-API/
     
       - **Resolution**: the error is due to the fact that the working
         dir for the container is /code. This is indeed what is set in
-        the dockerfile via \`\`\` WORKDIR /code \`\`\` .
+        the dockerfile via ``` WORKDIR /code ``` .
         
         Consequently when running the container from command line,
         docker looks for the library libdarknet.so in the working dir,
