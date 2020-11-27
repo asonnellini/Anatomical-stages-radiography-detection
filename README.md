@@ -4,8 +4,8 @@ This repository hosts the code of **Deep to the Bones,** an Application
 that automatically detects anatomical sections of the body in
 radiographies.
 
-The application is a POC but shows already the feasibility of
-implementing such a system.
+The application is a POC but shows already the feasibility of such a
+system.
 
 The drivers for this project, its detailed implementation, potential
 improvements, past and currently standing issues are all documented.
