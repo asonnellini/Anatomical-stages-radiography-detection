@@ -84,8 +84,7 @@
 4.  Optionally you can tag your container and push it to your Docker
     repository
     
-      - ``` docker tag yolo-container
-        <docker-account-name>/<custom-image-name> ```
+      - ``` docker tag yolo-container   <docker-account-name>/<custom-image-name> ```
     
       - ``` docker login ```
         
@@ -149,8 +148,7 @@
   - Run the Docker image executing the following command – see the next
     point for the detached mode:
     
-      - ``` sudo docker run -it -p 80:8090 --gpus all -v
-        ~/exchange:/exchange asonnellini/yolo-custom-folders-flask_v2 ```
+      - ``` sudo docker run -it -p 80:8090 --gpus all -v    ~/exchange:/exchange asonnellini/yolo-custom-folders-flask_v2 ```
         
           - Given that the container was run with -i and -t, you can
             detach from it and leave it running using the CTRL-p CTRL-q
@@ -198,10 +196,7 @@ From “inside” the Docker Image:
   - Start a run executing for example the script
     /code/darknet/obj-config-files/Yolo-Train.sh:
     
-      - ``` /code/darknet/darknet detector train
-        /code/darknet/obj-config-files/obj.data
-        /code/darknet/cfg/yolo-obj.cfg /code/darknet/yolov4.conv.137
-        -dont\_show -mjpeg\_port 8090 -map ```
+      - ``` /code/darknet/darknet detector train  /code/darknet/obj-config-files/obj.data      /code/darknet/cfg/yolo-obj.cfg /code/darknet/yolov4.conv.137 -dont\_show -mjpeg\_port 8090 -map ```
 
   - During the training YOLO will dump in the folder /exchange/backup
     the weights every 100 iterations
@@ -223,12 +218,7 @@ From “inside” the Docker image:
   - Run the below command – the output of the detection will be dumped
     in /exchange/result.txt
     
-      - ``` /code/darknet/darknet detector test
-        /code/darknet/obj-config-files/obj.data
-        /code/darknet/cfg/yolo-obj.cfg
-        /exchange/backup/yolo-obj\_last.weights
-        /exchange/images/9732\_AnteroPosterior\_unspecified.png -thresh
-        0.25 -ext\_output > /exchange/result.txt ```
+      - ``` /code/darknet/darknet detector test /code/darknet/obj-config-files/obj.data /code/darknet/cfg/yolo-obj.cfg /exchange/backup/yolo-obj\_last.weights /exchange/images/9732\_AnteroPosterior\_unspecified.png -thresh 0.25 -ext\_output > /exchange/result.txt ```
 
 # Integrate YOLO with a FLASK API and trigger the detection via POST
 
@@ -268,9 +258,7 @@ To use it:
 
   - Run the docker container with the following command:
     
-      - ``` sudo docker run -d --rm -p 8090:8090 --gpus all -v
-        ~/exchange:/exchange yolo-custom-folders-flask python3
-        darknet/flask-API/flask\_api.py ```
+      - ``` sudo docker run -d --rm -p 8090:8090 --gpus all -v    ~/exchange:/exchange yolo-custom-folders-flask python3 darknet/flask-API/flask\_api.py ```
     
       - The above command
         
@@ -314,13 +302,13 @@ To use it:
           - Run a curl command toward the flask API endpoint / passing
             information in a json, e.g.:
             
-              - ``` curl -H "Content-Type: application/json" -X POST -d
+              - ``` curl -H "Content-Type: application/json" -X POST -d 
                 '{"bucketName": "yolo-project", "folderBucket":
                 "toDetect", "imgFileName":
                 "1998\_AnteroPosterior\_supine.png",
                 "bucketDestination": "yolo-project", "bucketDestFolder":
-                "detected"}' http://<private IP of EC2>:8090/ ```
-                
+                "detected"}' http://<private IP of EC2>:8090/ 
+                ```
                 Where for the json all the following mandatory
                 attributes must be specified:
             
@@ -345,6 +333,7 @@ To use it:
         reply to the POST message with details about the path where the
         post-detection image is stored on an S3 :
         
+        ```
         { "Outcome": "OK",
         
         "destBucket": "yolo-project",
@@ -354,6 +343,7 @@ To use it:
         "destFileName": "123-det\_1998\_AnteroPosterior\_supine.png"
         
         }
+        ```
 
 Note: at this stage the detection is not performed for real, the flask
 API currently mimics just the mechanism of getting an image from an S3
