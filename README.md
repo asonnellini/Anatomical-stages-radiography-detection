@@ -493,7 +493,7 @@ This section describes the main issues we faced when building the POC.
   - **Issue**: Unable to create and upload objects from an EC2 belonging
     to account A to a non-public S3 bucket that belongs to account B
     
-      - **Resolution: **
+      - **Resolution**:
         
           - Setup an IAM role for the EC2 on account A such that grants
             access to S3 buckets, for example:
