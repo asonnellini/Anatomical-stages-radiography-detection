@@ -481,7 +481,8 @@ This section describes the main issues we faced when building the POC.
         
           - ``` if \_\_name\_\_ == '\_\_main\_\_' :
             
-            app.run(debug = True) ```
+            app.run(debug = True) 
+            ```
             
             TO:
         
