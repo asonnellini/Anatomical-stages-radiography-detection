@@ -8,7 +8,7 @@
     1.  See example
         Docker-Yolo/VGGvsYolo-Annotations/VGGAnnotation-example.csv
 
-3.  Run the script VGG-2-Yolo-annotations.ipynb to generate the:
+3.  Run the script VGG-2-Yolo-annotations_v2.ipynb to generate the:
     
     2.  \<imageId\>.txt file with YOLO Compatible annotations for
         \<imageId\>.png
