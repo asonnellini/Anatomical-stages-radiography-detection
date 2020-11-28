@@ -323,7 +323,7 @@ Highlights of the training of Yolo:
   - Subdivision: 16
 
 The image below shows the shape of the loss function after 3300
-iterations – the first part of the plot is not available because during
+iterations up to 8409 – the first part of the plot is not available because during
 the training the P2 instance was terminated by AWS causing the loss of
 the plot.
 
