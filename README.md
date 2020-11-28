@@ -14,20 +14,19 @@ documentation.
 
 # Table of contents of the README
 
-  - Quick Start and highlights of the application
+  - [Quick Start and highlights of the application](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#quick-start-and-highlights-of-the-application)
 
-  - CONTEXT: WHY automatic detection of anatomical sections
+  - [CONTEXT: WHY automatic detection of anatomical sections](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#context-why-automatic-detection-of-anatomical-sections-in-radiographies-is-relevant)
 
-  - SOLUTION: WHAT can be done to minimize and precisely measure the
-    absorbed dose
+  - [SOLUTION: WHAT can be done to minimize and precisely measure the absorbed dose](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#solution-what-can-be-done-to-minimize-and-precisely-measure-the-absorbed-dose)
 
-  - IMPLEMENTATION: HOW to implement such a system
+  - [IMPLEMENTATION: HOW to implement such a system](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#implementation-how-to-implement-such-a-system)
 
-  - Examples of detections
+  - [Examples of detections](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#examples-of-detections)
 
-  - Possible improvements
+  - [Possible improvements](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#planned-improvements)
 
-  - Issues experienced and their resolution
+  - [Issues experienced and their resolution](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#issues-experienced-and-their-resolution)
 
 # Quick Start and highlights of the application
 
@@ -339,9 +338,9 @@ events that take place once the User clicks on the Run Detection button.
 
 The front-end:
 
-  - Is an HTML page (home.html) hosted on an EC2 t2.micro
+  - Is an HTML page ( [home.html](https://github.com/asonnellini/Anatomical-stages-radiography-detection/blob/master/Frontend/home.html) ) hosted on an EC2 t2.micro
 
-  - The same EC2 hosts a Flask API (see the file app.py) that is
+  - The same EC2 hosts a Flask API (see the file [app.py](https://github.com/asonnellini/Anatomical-stages-radiography-detection/blob/master/Frontend/app.py) ) that is
     connected to the HTML:
     
       - The HTML page makes post calls to the Front-End Flask API
@@ -349,11 +348,11 @@ The front-end:
 
 The back-end:
 
-  - Is a P2xlarge EC2
+  - **Is a P2xlarge EC2**
 
-  - Hosts a Docker container having YOLO v.4 and its trained weights
+  - Hosts a **Docker container with YOLO v.4** and its trained weights - regarding the implementation of the docker image with Yolo please refer to [the specific README](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master/Docker-Yolo)
 
-  - The Docker container has a flask API with an endpoint that triggers
+  - The Docker container has a **flask API** with an endpoint that triggers
     the detection
 
 Back-end and front-end communicate with each other via a Lambda function
@@ -362,7 +361,7 @@ back-end.
 
 The above architecture allows to:
 
-  - **Decouple the front-end from the back-end **
+  - **Decouple the front-end from the back-end**
     
       - This allowed us to work almost independently on the front-end
         and the back-end without having integration problems
