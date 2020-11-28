@@ -486,16 +486,16 @@ This section describes the main issues we faced when building the POC.
     
       - **Resolution:** change the flask\_api.py from:
         
-          - ``` if \_\_name\_\_ == '\_\_main\_\_' :
-            
-            app.run(debug = True) 
-            ```
-            
-            TO:
+``` 
+if __name__ == '__main__' :
+  app.run(debug = True) 
+```
+TO:
         
-          - ``` if \_\_name\_\_ == '\_\_main\_\_' :
-            
-            app.run(host = '0.0.0.0', port = 8090, debug = True) ```
+``` 
+if __name__ == '__main__' :
+  app.run(host = '0.0.0.0', port = 8090, debug = True) 
+```
 
   - **Issue**: Unable to create and upload objects from an EC2 belonging
     to account A to a non-public S3 bucket that belongs to account B
@@ -505,63 +505,39 @@ This section describes the main issues we faced when building the POC.
           - Setup an IAM role for the EC2 on account A such that grants
             access to S3 buckets, for example:
             
-              - ```
-                
-                {
-                
-                "Version": "2012-10-17",
-                
-                "Statement": \[
-                
-                {
-                
-                "Effect": "Allow",
-                
-                "Action": "s3:\*",
-                
-                "Resource": " \\\< ARN code of the S3 bucket \\\> "
-                
-                }
-                
-                \]
-                
-                }
-                
-                ```
+```
+  {
+  "Version": "2012-10-17",
+  
+  "Statement": [
+  
+    {
+      "Effect": "Allow",
+      "Action": "s3:\*",
+      "Resource": " \\\< ARN code of the S3 bucket \\\> "
+    }
+  ]
+  }
+  ```
+- Setup a policy on the bucket of account B to allow the role
+  from account A to access and operate on the bucket
         
-          - Setup a policy on the bucket of account B to allow the role
-            from account A to access and operate on the bucket
-        
-          - ```
-            
-            {
-            
-            "Version": "2012-10-17",
-            
-            "Statement": \[
-            
-            {
-            
-            "Effect": "Allow",
-            
-            "Principal": {
-            
-            "AWS": ""\<ARN code of the EC2 IAM role to access an S3
-            bucket\>"
-            
-            },
-            
-            "Action": "s3:\*",
-            
-            "Resource": "\<ARN code of your S3 bucket\>/\*"
-            
-            }
-            
-            \]
-            
-            }
-            
-            ```
+```
+  {
+  "Version": "2012-10-17",
+  "Statement": [
+      {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": ""\<ARN code of the EC2 IAM role to access an S3
+        bucket\>"
+      },
+      "Action": "s3:\*",
+      "Resource": "\<ARN code of your S3 bucket\>/\*"
+      }
+    ]
+  }
+  ```
 
   - **Issue:** Unable to create a “working” presigned URL using a Lambda
     function of the account B for an object uploaded to an S3 bucket
@@ -572,57 +548,36 @@ This section describes the main issues we faced when building the POC.
           - upload objects setting the flag 'ACL' =
             'bucket-owner-full-control', e.g.:
             
-              - ``` s3\_client = boto3.client('s3')
+``` 
+s3_client = boto3.client('s3')
+s3_client.upload_file(fileToUpload, bucketName,
+                object_name,
+            ExtraArgs= 'ACL':'bucket-owner-full-control'}) 
+```     
+- Set the bucket policy:
             
-              - s3\_client.upload\_file(fileToUpload, bucketName,
-                object\_name,
-                ExtraArgs={'ACL':'bucket-owner-full-control'}) ```
-        
-          - Set the bucket policy:
-            
-              - ```
-                
-                {
-                
-                "Version": "2012-10-17",
-                
-                "Statement": \[
-                
-                {
-                
-                "Effect": "Allow",
-                
-                "Principal": {
-                
-                "AWS": \[
-                
-                "arn:aws:iam::090887179158:role/s3\_access\_from\_EC2",
-                
-                "arn:aws:iam::794308064805:role/S3Role"
-                
-                \]
-                
-                },
-                
-                "Action": \[
-                
-                "s3:GetObject",
-                
-                "s3:PutObject",
-                
-                "s3:PutObjectAcl"
-                
-                \],
-                
-                "Resource": "arn:aws:s3:::my-YOLO/\*"
-                
-                }
-                
-                \]
-                
-                }
-                
-                ```
+```
+
+{
+"Version": "2012-10-17",
+"Statement": [
+{
+"Effect": "Allow",
+"Principal": {
+"AWS": [
+"arn:aws:iam::090887179158:role/s3\_access\_from\_EC2",
+"arn:aws:iam::794308064805:role/S3Role"
+]
+},
+"Action": [
+  "s3:GetObject",
+  "s3:PutObject",
+  "s3:PutObjectAcl"
+],
+"Resource": "arn:aws:s3:::my-YOLO/\*"
+]
+}
+```
 
   - **Issue**: If we trigger a detection using the original darknet.py
     and darknet\_image.py files from the official github repository, the
@@ -644,9 +599,11 @@ This section describes the main issues we faced when building the POC.
   - **Issue**: when starting the docker container along with the flask
     api from the below command line
     
-    ``` sudo docker run -d --rm -p 8090:8090 --gpus all -v
-    ~/exchange:/exchange asonnellini/yolo-custom-folders-flask\_v2
-    python3 darknet/flask-API/flask\_api.py ```
+``` 
+sudo docker run -d --rm -p 8090:8090 --gpus all -v
+~/exchange:/exchange asonnellini/yolo-custom-folders-flask\_v2
+python3 darknet/flask-API/flask\_api.py
+  ```
     
     We received an error related to missing libdarknet.so even though
     this library was already in the folder darknet/flask-API/
