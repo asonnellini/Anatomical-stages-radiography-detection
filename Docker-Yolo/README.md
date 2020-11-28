@@ -1,14 +1,14 @@
 # Prepare the Images and the annotations for YOLO
 
 1.  Annotate images with VGG Annotator -
-    http://www.robots.ox.ac.uk/~vgg/software/via/
+    [http://www.robots.ox.ac.uk/~vgg/software/via/](http://www.robots.ox.ac.uk/~vgg/software/via/)
 
 2.  Save the annotations in csv file
     
     1.  See example
-        Docker-Yolo/VGGvsYolo-Annotations/VGGAnnotation-example.csv
+        `Docker-Yolo/VGGvsYolo-Annotations/VGGAnnotation-example.csv`
 
-3.  Run the script VGG-2-Yolo-annotations_v2.ipynb to generate the:
+3.  Run the script `VGG-2-Yolo-annotations_v2.ipynb` to generate the:
     
     2.  \<imageId\>.txt file with YOLO Compatible annotations for
         \<imageId\>.png
@@ -16,18 +16,18 @@
         1.  See for
                 example
             
-            1.  Docker-Yolo/VGGvsYolo-Annotations/outPut-VGG-2-Yolo-annotations/
-                1998.png
+            1.  `Docker-Yolo/VGGvsYolo-Annotations/outPut-VGG-2-Yolo-annotations/
+                1998.png`
             
-            2.  Docker-Yolo/VGGvsYolo-Annotations/outPut-VGG-2-Yolo-annotations/
-                1998.txt
+            2.  `Docker-Yolo/VGGvsYolo-Annotations/outPut-VGG-2-Yolo-annotations/
+                1998.txt`
     
     3.  Generate a txt file that list the path (path within the Docker
         container) of for the
             images
         
-        2.  Docker-Yolo/VGGvsYolo-Annotations/outPut-VGG-2-Yolo-annotations/
-            1998.txt
+        2.  `Docker-Yolo/VGGvsYolo-Annotations/outPut-VGG-2-Yolo-annotations/
+            1998.txt`
         
         3.  Note: You will have to split this text file to generate the
             train.txt and test.txt files, each of them with the list of
@@ -51,16 +51,20 @@
 
 2.  Install Docker
     
-      - E.g. “quick-dirty” solution
-    
-      - ``` curl -fsSL https://get.docker.com -o get-docker.sh ```
-    
-      - ``` sudo sh get-docker.sh ```
+E.g. “quick-dirty” solution
+
+```
+curl -fsSL https://get.docker.com -o get-docker.sh 
+```
+
+```
+sudo sh get-docker.sh 
+```
 
 3.  Create on the EC2 a folder:
     
       - Save in this folder the files and folders of
-        Docker-Yolo/creation-yolo-image-P2 on this github
+        `Docker-Yolo/creation-yolo-image-P2` on this github
     
       - The content of the folder must be like below
 
@@ -71,11 +75,15 @@
 
   - From this folder run (note the dot at the end of the command)
     
-      - ``` docker build -t <container-name> . ```
+  ``` 
+  docker build -t <container-name> . 
+  ```
 
   - For example (note the dot at the end of the command)
     
-      - ``` docker build -t yolo-container . ```
+``` 
+docker build -t yolo-container . 
+```
 
   - The final result will be:
 
@@ -84,19 +92,24 @@
 4.  Optionally you can tag your container and push it to your Docker
     repository
     
-      - ``` docker tag yolo-container   <docker-account-name>/<custom-image-name> ```
+``` 
+docker tag yolo-container   <docker-account-name>/<custom-image-name> 
+```
     
-      - ``` docker login ```
-        
-          - Type your user and then the pwd
+``` 
+docker login 
+```     
+- Type your user and then the pwd
     
-      - ``` docker push <docker-account-name>/<custom-image-name> ```
+``` 
+docker push <docker-account-name>/<custom-image-name> 
+```
 
 # Run the Docker Image with Yolo
 
 1.  Create an S3 bucket named //yolo-project/
     
-      - Create a folder //yolo-project/setupToStartYolo/
+      - Create a folder `//yolo-project/setupToStartYolo/`
     
       - Upload on the S3 the images and annotations produced after
         section 1:
@@ -148,23 +161,26 @@
   - Run the Docker image executing the following command – see the next
     point for the detached mode:
     
-      - ``` sudo docker run -it -p 80:8090 --gpus all -v    ~/exchange:/exchange asonnellini/yolo-custom-folders-flask_v2 ```
-        
-          - Given that the container was run with -i and -t, you can
-            detach from it and leave it running using the CTRL-p CTRL-q
-            key sequence
+``` 
+sudo docker run -it -p 80:8090 --gpus all -v    ~/exchange:/exchange asonnellini/yolo-custom-folders-flask_v2 
+```
+      
+
+> Given that the container was run with -i and -t, you can
+  detach from it and leave it running using the CTRL-p CTRL-q
+  key sequence
             
-              - To re-attach/re-enter the container:
-                
-                  - ``` sudo docker attach ddc081f03827 ```
-                
-                  - ``` sudo docker container ps ```
+> To re-attach/re-enter the container: `sudo docker attach <container_id>`
+                               
+``` 
+sudo docker container ps 
+```
         
-          - \--gpus all : ensures the Docker Image can use all the gpus
-            and that the folder ~/exchange on the EC2 is shared with the
-            folder /exchange on the Docker Image
-        
-          - \-p 80:8090 maps the container port 8090 to the host 80
+> \--gpus all : ensures the Docker Image can use all the gpus
+  and that the folder ~/exchange on the EC2 is shared with the
+  folder /exchange on the Docker Image
+
+> \-p 80:8090 maps the container port 8090 to the host 80
 
   - At this point in time:
     
@@ -178,13 +194,15 @@
     
       - Download some weights for the coco.dataset:
         
-          - ``` wget
-            https://github.com/AlexeyAB/darknet/releases/download/darknet\_yolo\_v3\_optimal/yolov4.weights ```
+```
+wget https://github.com/AlexeyAB/darknet/releases/download/darknet\_yolo\_v3\_optimal/yolov4.weights 
+```
     
-      - Run a test detection
-        
-          - `````` ./darknet detector test ./cfg/coco.data
-            ./cfg/yolov4.cfg ./yolov4.weights data/dog.jpg -thresh 0.25 ```
+- Run a test detection
+  
+``` 
+./darknet detector test ./cfg/coco.data ./cfg/yolov4.cfg ./yolov4.weights data/dog.jpg -thresh 0.25 
+```
 
 # Train YOLO
 
@@ -196,20 +214,24 @@ From “inside” the Docker Image:
   - Start a run executing for example the script
     /code/darknet/obj-config-files/Yolo-Train.sh:
     
-      - ``` /code/darknet/darknet detector train  /code/darknet/obj-config-files/obj.data      /code/darknet/cfg/yolo-obj.cfg /code/darknet/yolov4.conv.137 -dont\_show -mjpeg\_port 8090 -map ```
+``` 
+/code/darknet/darknet detector train  /code/darknet/obj-config-files/obj.data      /code/darknet/cfg/yolo-obj.cfg /code/darknet/yolov4.conv.137 -dont\_show -mjpeg\_port 8090 -map 
+```
 
   - During the training YOLO will dump in the folder /exchange/backup
     the weights every 100 iterations
 
   - You can check the GPU memory consumption running:
     
-      - ``` nvidia-smi ```
+``` 
+nvidia-smi 
+```
 
 # Predict with YOLO
 
 From “inside” the Docker image:
 
-  - Change in /code/darknet/cfg/yolo-obj.cfg:
+  - Change in `/code/darknet/cfg/yolo-obj.cfg`:
     
       - Uncomment the part about testing (\#batch=1 \#subdivisions=1)
     
@@ -218,7 +240,9 @@ From “inside” the Docker image:
   - Run the below command – the output of the detection will be dumped
     in /exchange/result.txt
     
-      - ``` /code/darknet/darknet detector test /code/darknet/obj-config-files/obj.data /code/darknet/cfg/yolo-obj.cfg /exchange/backup/yolo-obj\_last.weights /exchange/images/9732\_AnteroPosterior\_unspecified.png -thresh 0.25 -ext\_output > /exchange/result.txt ```
+``` 
+/code/darknet/darknet detector test /code/darknet/obj-config-files/obj.data /code/darknet/cfg/yolo-obj.cfg /exchange/backup/yolo-obj\_last.weights /exchange/images/9732\_AnteroPosterior\_unspecified.png -thresh 0.25 -ext\_output > /exchange/result.txt 
+```
 
 # Integrate YOLO with a FLASK API and trigger the detection via POST
 
@@ -232,118 +256,123 @@ To use it:
 
   - Download the docker image asonnellini/yolo-custom-folders-flask_v2
     
-      - ``` docker pull asonnellini/yolo-custom-folders-flask_v2 ```
+``` 
+docker pull asonnellini/yolo-custom-folders-flask_v2
+```
 
-  - Start an EC2 instance according to the below template:
-    
-      - EC2 Type:
-        
-          - For production like deployment ==\> p2.xlarge
-        
-          - For testing purpose (e.g. without performing the detection,
-            so no need of GPUs) ==\> t2.micro
-    
-      - AMI:
-        
-          - Deep Learning AMI (Ubuntu 18.04) Version 36.0 ==\>
-            ami-01bd6a1621a6968d7
-    
-      - IAM Role:
-        
-          - Grant full access to S3 Buckets
-    
-      - Sec Group:
-        
-          - Ensure communications are allowed for port 8090
+- Start an EC2 instance according to the below template:
+  
+    - EC2 Type:
+      
+        - For production like deployment ==\> p2.xlarge
+      
+        - For testing purpose (e.g. without performing the detection,
+          so no need of GPUs) ==\> t2.micro
+  
+    - AMI:
+      
+        - Deep Learning AMI (Ubuntu 18.04) Version 36.0 ==\>
+          ami-01bd6a1621a6968d7
+  
+    - IAM Role:
+      
+        - Grant full access to S3 Buckets
+  
+    - Sec Group:
+      
+        - Ensure communications are allowed for port 8090
 
-  - Run the docker container with the following command:
+- Run the docker container with the following command:
     
-      - ``` sudo docker run -d --rm -p 8090:8090 --gpus all -v    ~/exchange:/exchange yolo-custom-folders-flask python3 darknet/flask-API/flask\_api.py ```
+``` 
+sudo docker run -d --rm -p 8090:8090 --gpus all -v    ~/exchange:/exchange yolo-custom-folders-flask python3 darknet/flask-API/flask\_api.py 
+```
     
-      - The above command
-        
-          - runs the container in detached mode
-        
-          - maps port 8090 on the EC2 host to container port 8090 –
-            please check out this article
-            https://pythonspeed.com/articles/docker-connection-refused/
-            for some additional info about what’s needed to successfully
-            run the flask API on docker
-        
-          - runs the script flask\_api.py (inside the container) which
-            is the script that has the flask API
+- The above command
+  
+    - runs the container in detached mode
+  
+    - maps port 8090 on the EC2 host to container port 8090 –
+      please check out this article
+      https://pythonspeed.com/articles/docker-connection-refused/
+      for some additional info about what’s needed to successfully
+      run the flask API on docker
+  
+    - runs the script flask\_api.py (inside the container) which
+      is the script that has the flask API
 
-  - The flask API implemented in the container
+- The flask API implemented in the container
+
+- Listens to all the container network interfaces and port 8090
+
+- exposes 1 endpoint / and 2 methods, namely GET and POST:
+  
+    - POST + / = triggers the detection on an image saved in the
+      S3 bucket
+  
+    - GET + / = returns just some info about the flask API
+
+- Specifically, to run a detection on an image, the following has
+  to be setup:
+  
+    - Ensure the EC2 where the docker container is running has:
+      
+        - an IAM that grants full access to S3 buckets
+      
+        - a Security Group that allows traffic on the port 8090
+  
+    - An S3 bucket that saves the image on which the detection has
+      to be run
+  
+    - Another S3 bucket available to store the image upon
+      detection
+  
+    - Run a curl command toward the flask API endpoint / passing
+      information in a json, e.g.:
+            
+``` 
+curl -H "Content-Type: application/json" -X POST -d 
+'{"bucketName": "yolo-project", "folderBucket":
+"toDetect", "imgFileName":
+"1998\_AnteroPosterior\_supine.png",
+"bucketDestination": "yolo-project", "bucketDestFolder":
+"detected"}' http://<private IP of EC2>:8090/ 
+```
+  Where for the json all the following mandatory
+  attributes must be specified:
+
+- bucketName: name of the S3 bucket that hosts the image
+  on which detection has to be run
+
+- folderBucker: folder in the S3 bucket where the file is
+  placed; if the file is not in any folder this attribute
+  must be set to empty string “”
+
+- imgFileName: name of the image saved on the S3 bucket
+
+- bucketDestination: name of the bucket which will host
+  the post-detection image
+
+- bucketDestFolder: name of the folder in the bucket which
+  will host the post-detection image; if the file is not
+  in any folder this attribute must be set to empty string
+  “”
+
+- if the detection is executed successfully, the flask API will
+  reply to the POST message with details about the path where the
+  post-detection image is stored on an S3 :
     
-      - Listens to all the container network interfaces and port 8090
+    ```
+    { "Outcome": "OK",
     
-      - exposes 1 endpoint / and 2 methods, namely GET and POST:
-        
-          - POST + / = triggers the detection on an image saved in the
-            S3 bucket
-        
-          - GET + / = returns just some info about the flask API
+    "destBucket": "yolo-project",
     
-      - Specifically, to run a detection on an image, the following has
-        to be setup:
-        
-          - Ensure the EC2 where the docker container is running has:
-            
-              - an IAM that grants full access to S3 buckets
-            
-              - a Security Group that allows traffic on the port 8090
-        
-          - An S3 bucket that saves the image on which the detection has
-            to be run
-        
-          - Another S3 bucket available to store the image upon
-            detection
-        
-          - Run a curl command toward the flask API endpoint / passing
-            information in a json, e.g.:
-            
-              - ``` curl -H "Content-Type: application/json" -X POST -d 
-                '{"bucketName": "yolo-project", "folderBucket":
-                "toDetect", "imgFileName":
-                "1998\_AnteroPosterior\_supine.png",
-                "bucketDestination": "yolo-project", "bucketDestFolder":
-                "detected"}' http://<private IP of EC2>:8090/ 
-                ```
-                Where for the json all the following mandatory
-                attributes must be specified:
-            
-              - bucketName: name of the S3 bucket that hosts the image
-                on which detection has to be run
-            
-              - folderBucker: folder in the S3 bucket where the file is
-                placed; if the file is not in any folder this attribute
-                must be set to empty string “”
-            
-              - imgFileName: name of the image saved on the S3 bucket
-            
-              - bucketDestination: name of the bucket which will host
-                the post-detection image
-            
-              - bucketDestFolder: name of the folder in the bucket which
-                will host the post-detection image; if the file is not
-                in any folder this attribute must be set to empty string
-                “”
+    "destBucketFolder": "detected",
     
-      - if the detection is executed successfully, the flask API will
-        reply to the POST message with details about the path where the
-        post-detection image is stored on an S3 :
-        
-        ```
-        { "Outcome": "OK",
-        
-        "destBucket": "yolo-project",
-        
-        "destBucketFolder": "detected",
-        
-        "destFileName": "123-det\_1998\_AnteroPosterior\_supine.png"
-        
-        }
-        ```
+    "destFileName": "123-det\_1998\_AnteroPosterior\_supine.png"
+    
+    }
+    ```
 
 Note: at this stage the detection is not performed for real, the flask
 API currently mimics just the mechanism of getting an image from an S3
