@@ -27,11 +27,6 @@ app.post('/upload', upload, (req, res) => {
     let myFile = req.file.originalname.split(".")
     const fileType = myFile[myFile.length - 1]
 
-    // console.log(req.file)
-    // res.send({
-    //     message: "hello world"
-    // })
-
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: `${uuidv4()}.${fileType}`,
