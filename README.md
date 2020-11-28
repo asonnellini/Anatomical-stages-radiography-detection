@@ -436,6 +436,14 @@ would allow to:
   - **Increase the Scalability of the solution** to manage high number
     of requests
 
+## Deployment
+
+7) Automate the deployment using terraform, Ansible...
+
+## CI/CD
+
+8) Implement a Continious Integration and Continious Delivery pipeline
+
 # Issues experienced and their resolution
 
 This section describes the main issues we faced when building the POC.
