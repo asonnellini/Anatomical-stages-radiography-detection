@@ -350,7 +350,7 @@ The back-end:
 
   - **Is a P2xlarge EC2**
 
-  - Hosts a **Docker container with YOLO v.4** and its trained weights - regarding the implementation of the docker image with Yolo please refer to [the specific README](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master/Docker-Yolo)
+  - Hosts a **Docker container with YOLO v.4** and its trained weights - regarding the implementation of the docker image with Yolo please refer to [the specific README of the dedicated section](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master/Docker-Yolo)
 
   - The Docker container has a **flask API** with an endpoint that triggers
     the detection
