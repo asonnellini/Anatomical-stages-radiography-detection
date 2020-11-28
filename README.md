@@ -1,41 +1,47 @@
 # Overview
 
-This repository hosts the code of an Application that automatically
-detects anatomical sections of the body in radiographies.
+This repository hosts the code of **Deep to the Bones,** an Application
+that automatically detects anatomical sections of the body in
+radiographies.
+
+The application is a POC but shows already the feasibility of such a
+system.
 
 The drivers for this project, its detailed implementation, potential
 improvements, past and currently standing issues are all documented.
 This README file is the entry point to access all the relevant
 documentation.
 
-The application is still a POC but already shows the added value that
-can bring to the healthcare industry.
-
 # Table of contents of the README
 
-  - Quick Start and highlights of the application
+  - [Quick Start and highlights of the application](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#quick-start-and-highlights-of-the-application)
 
-  - CONTEXT: WHY automatic detection of anatomical sections
+  - [CONTEXT: WHY automatic detection of anatomical sections](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#context-why-automatic-detection-of-anatomical-sections-in-radiographies-is-relevant)
 
-  - SOLUTION: WHAT can be done to minimize and precisely measure the
-    absorbed dose
+  - [SOLUTION: WHAT can be done to minimize and precisely measure the absorbed dose](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#solution-what-can-be-done-to-minimize-and-precisely-measure-the-absorbed-dose)
 
-  - IMPLEMENTATION: HOW to implement such a system
+  - [IMPLEMENTATION: HOW to implement such a system](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#implementation-how-to-implement-such-a-system)
 
-  - Examples of detections
+  - [Examples of detections](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#examples-of-detections)
 
-  - Possible improvements
+  - [Possible improvements](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#planned-improvements)
 
-  - Issues experienced and their resolution
+  - [Issues experienced and their resolution](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master#issues-experienced-and-their-resolution)
 
 # Quick Start and highlights of the application
 
-The user can easily use the application from its browser using a link
-(the application might not be available when we stop the EC2), uploading
-a radiography image (accepted formats so far are jpg, jpeg, png – dicom
-will be supported shortly) and get back the image with the detected
-bounding boxes. The image below shows a view of the Application after
-the detection is executed.
+The user can easily use the application following the below procedure:
+
+  - Open a browser and go [to this link](http://18.188.16.8:5000/) (the
+    application might not be available or not performing the detection
+    in case we stopped the EC2 that performs the detection)
+
+  - Upload a radiography image (accepted formats so far are jpg, jpeg,
+    png – dicom will be supported shortly)
+
+  - Click on the ***Run Detection*** button
+
+  - Click on ***Download the image*** below the image to download it
 
 ![](.//media/image1.png)
 
@@ -44,16 +50,17 @@ Main features of the application:
   - **Web-Based front-end** hosted on an EC2
 
   - Images saved on **Private s3** buckets to ensure high-reliability,
-    availability and security
+    availability, and security
 
-  - **Detection performed by a YOLO v.4** Neural Network trained
+  - **Detection performed by a YOLO v.4** **Neural Network** trained
     specifically for object detection of anatomical sections in
     radiographies
 
   - **Back-end**
     
-      - Made of the Neural Network running on a **Docker container
-        hosted on a P2.xlarge EC2**
+      - Made of the a YOLO v.4 Neural Network running on a **Docker
+        container hosted on a P2.xlarge EC2 – this increases the
+        scalability of the back-end and the “portability” of YOLO v.4**
     
       - Equipped with a **FLASK RESTful API** **that enables easy
         integration with any front-end**
@@ -125,8 +132,8 @@ scan of the patient that is take to allow the AEC to infers the optimal
 intensity. These preliminary radiography scans are the so-called “scout
 images”. Scout images are used by the AEC under the assumption that the
 patient is well positioned in the CT Scan. Of course, in general this
-might not be the case. Generally speaking, CT technicians can apply the
-below procedure to address this issue:
+might not be the case. CT technicians can apply the below procedure to
+address this issue:
 
 1)  Place the patient in the CT scan and perform a preliminary scout
     image of the patient – based on this image, the CT technician
@@ -226,72 +233,6 @@ the following high-level schema implementation:
         ellipsis and the axis of the ellipsis have the same length of
         the sides of the bounding boxes
 
-In addition to functional requirements, from the point of view of the
-architecture, as shown in the picture below, the application is
-characterized by:
-
-  - An easy-to-use web-based Front-End
-
-  - A backend made of a Docker container that hosts the trained Neural
-    Network
-    
-      - The docker container runs on an AWS EC2
-
-  - The back-end exposes a flask Restful API that triggers the detection
-    of an image via a POST call
-
-  - The Front-End and the back-end are decoupled via an AWS Amazon API
-    GTW that uses Lambda functions to trigger the detection of the API
-
-  - Private S3 buckets to host the images
-
-**Important:** It is important to remark that the above architecture
-allows to:
-
-  - Plug the back-end to different front-ends: Any already existing
-    solutions can integrate the back-end of our application just
-    implementing a simple logic to communicate with the AWS API GTW
-
-  - De-couple and “protect” the back-end from the front-end; this
-    provides flexibility in case of:
-    
-      - Multiple users using the solution at the same time
-    
-      - Need to change/adapt something on either the front-end or the
-        back-end; the front-end and the back-end will only communicate
-        with the API GTW, so changes done on one “side” of the
-        application will not directly impact the other “side”
-
-From a workflow point of view, referring to the schema below:
-
-1)  The user uploads the image on the Front-End
-
-2)  The front-end executes a call to the AWS API GTW
-
-3)  The AWS API GTW calls a Lambda function that generates an S3
-    presigned URL and passes it to the front-end
-
-4)  The front-end uploads the radiography to an S3 bucket using the
-    pre-signed URL
-
-5)  The user click on “detection” button
-
-6)  The front-end executes a POST call to the API GTW that includes the
-    info about the object on the S3 bucket (e.g. object name and bucket
-    name)
-
-7)  The API GTW calls a lambda function that executes a POST call to the
-    flask Restful API running on the Docker container that hosts the NN,
-    passing the info about the image location on the S3 bucket
-
-8)  The image is downloaded from the S3 to the docker container + the
-    detection is performed + the output image is saved on an S3 bucket
-    and the details about its location are returned to the Lambda
-    function
-
-9)  The response is passed to the Web Front-End along with a presigned
-    URL that the front-end can use to download the final image
-
 ## Detailed implementation
 
 In this section we will provide more details about how we built the
@@ -310,10 +251,12 @@ We chose a YOLO-like model because, [as described in the original YOLO
 paper](https://arxiv.org/abs/1506.02640), it is capable to take into
 account the whole image when performing the object detection (i.e. it
 captures contextual information reducing for example the chance to
-wrongly detect patches from the background) and its capability to
-generalize well. YOLO is also famous for being very fast in the
-detection phase (useful for real time detection in videos) but this was
-not the most relevant property within the context of our project.
+wrongly detect patches from the background) and generalize well. This
+last property is quite relevant for our radiographies which were quite
+different from each other both in terms of content and quality. YOLO is
+also famous for being very fast in the detection phase (useful for real
+time detection in videos) but this was not the most relevant property
+within the context of our project.
 
 [As described by the paper supporting
 it](https://arxiv.org/abs/2004.10934), YOLO v.4 in particular is more
@@ -338,22 +281,30 @@ The Dataset we used to train Yolo is characterized by the following:
     scans of old paper X-rays and do not meet current digital X-ray
     standards, hence their quality is not good.
     
-    Nevertheless, we chose this dataset because it had radiographies
-    from any section of the body, not “just” radiographies of the chest
-    which are the most common to find.
+    Nevertheless, this dataset has radiographies from any section of the
+    body, not “just” radiographies of the chest which are the most
+    common to find.
 
   - **Number of images** effectively used to train and test the
     Application: 939 images, splitted in train (75%) and test set (25%)
+    – all of them were manually annonated
 
   - **Image file format**: PNG – we plan to support Dicom shortly
 
-  - **Comments:** given the non-standardized nature of the images of our
-    dataset, we had to manually review all the 14,000 images, select the
-    ones with the Anatomical Sections of our interest and in some cases
-    crop the borders of the images that had the typical “distortions” of
-    an image that is manually scanned
+  - **Dataset preprocessing and annotations:** given the
+    non-standardized nature of the images of our dataset, we had to
+    manually review all the 14,000 images, select the ones with the
+    Anatomical Sections of our interest and in some cases crop the
+    borders of the images that had the typical “distortions” of an image
+    that is manually scanned.
+    
+    Eventually we manually annotated all the selected images [using
+    VGG](http://www.robots.ox.ac.uk/~vgg/software/via/) annotator, and
+    convert the annotations to Yolo compatible format – [see the
+    relevant documentation at this
+    link](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master/Docker-Yolo#prepare-the-images-and-the-annotations-for-yolo)
 
-## Training
+### Training
 
 Highlights of the training of Yolo:
 
@@ -362,7 +313,7 @@ Highlights of the training of Yolo:
 
   - Duration of the training 36 hours
 
-  - Number of batches executed: 8700
+  - Number of iterations executed: 8700
 
   - Heigh/width of the image for the input layer: 256 (we had to lower
     it from the initial 416 to speed up the training)
@@ -371,19 +322,59 @@ Highlights of the training of Yolo:
 
   - Subdivision: 16
 
-The image below shows the last part of the loss function – the first
-part of the plot is not available because during the training the P2
-instance was terminated by AWS causing the loss of the plot.
+The image below shows the shape of the loss function after 3300
+iterations – the first part of the plot is not available because during
+the training the P2 instance was terminated by AWS causing the loss of
+the plot.
 
 ![](.//media/image8.png)
 
-## Architecture
+### Architecture
 
-Work in progress.
+The below schema shows the Architecture of our App and the flow of
+events that take place once the User clicks on the Run Detection button.
+
+![](.//media/image9.png)
+
+The front-end:
+
+  - Is an HTML page ( [home.html](https://github.com/asonnellini/Anatomical-stages-radiography-detection/blob/master/Frontend/home.html) ) hosted on an EC2 t2.micro
+
+  - The same EC2 hosts a Flask API (see the file [app.py](https://github.com/asonnellini/Anatomical-stages-radiography-detection/blob/master/Frontend/app.py) ) that is
+    connected to the HTML:
+    
+      - The HTML page makes post calls to the Front-End Flask API
+        triggering the actions shown in the above diagram
+
+The back-end:
+
+  - **Is a P2xlarge EC2**
+
+  - Hosts a **Docker container with YOLO v.4** and its trained weights - regarding the implementation of the docker image with Yolo please refer to [the specific README of the dedicated section](https://github.com/asonnellini/Anatomical-stages-radiography-detection/tree/master/Docker-Yolo)
+
+  - The Docker container has a **flask API** with an endpoint that triggers
+    the detection
+
+Back-end and front-end communicate with each other via a Lambda function
+that ensures the compatibility of the calls from the front-end to the
+back-end.
+
+The above architecture allows to:
+
+  - **Decouple the front-end from the back-end**
+    
+      - This allowed us to work almost independently on the front-end
+        and the back-end without having integration problems
+
+  - **Easily generate a presigned URL from the S3 bucket**
+
+  - **Pave the way toward a more sophisticated and “production-ready”
+    environment** like the one exposed in section Planned Improvements
 
 # Examples of detections
 
-![](.//media/image9.jpeg)
+In this section we show some of the detections performed by our App.
+**None of these images were part of the training set.**
 
 ![](.//media/image10.jpeg)
 
@@ -391,42 +382,63 @@ Work in progress.
 
 ![](.//media/image12.jpeg)
 
-# Possible Improvements
+![](.//media/image13.jpeg)
+
+# Planned Improvements
 
 This section describes improvements that we are planning to put in place
-to improve the current POC.
+to enhance the current POC.
 
-## How to improve the quality of the detection
+## Detection
 
-1)  Use more and higher quality images to train the detection system
+1)  Use **more and higher quality images** to train the detection system
 
-2)  Apply Data Augmentation techniques to the training set
+2)  Apply **Data Augmentation** to the training set
 
-3)  Use DICOM image format to take advantage of their metadata as well,
-    for example to extrapolate from the coordinate of the bounding boxes
-    on the image the physical coordinates of the patient anatomical
-    sections in the reference system of the CT – this will be relevant
-    to correctly position the patient on the CT scan, like shown in the
-    figure below and explained in the previous sections
+3)  **Use DICOM image format** to take advantage of their metadata as
+    well, for example to **extrapolate from the coordinate of the
+    bounding boxes on the image the physical coordinates of the patient
+    anatomical sections** in the reference system of the CT – this will
+    be relevant to correctly position the patient on the CT scan, like
+    shown in the figure below and explained in the previous sections
 
 ![](.//media/image6.png)
 
-4)  We can implement an a-posteriori logic to identify the diaphragm as
-    the section of the body obtained by the intersection, as shown by
-    the red box in the image below
+4)  **Additional post-processing logic:** We can implement an
+    a-posteriori logic to identify the diaphragm as the section of the
+    body obtained by the intersection, as shown by the red box in the
+    image below
 
-![](.//media/image13.png)
+![](.//media/image14.png)
 
-## How to improve the architecture
+## Architecture
 
-5)  Improve the architecture introducing a GTW API that decouples the
+5)  Improve the UX of the front-end
+
+6)  Improve the architecture introducing a GTW API that decouples the
     front-end from the backend
 
-6)  Implement a queuing mechanism (e.g. SNS and SQS) to further decouple
-    the back-end from the rest of the application and manage multiple
-    incoming detection requests without overloading the backend it
+![](.//media/image15.png)
+
+**Important:** It is important to remark that the improvements 6 and 7
+would allow to:
+
+  - **Further decouple the front-end from the back-end**:
+    
+      - Any already existing solutions can integrate the back-end of our
+        application just implementing a simple logic to communicate with
+        the AWS API GTW
+    
+      - The front-end and the back-end will only communicate with the
+        API GTW, so changes done on one “side” of the application will
+        not directly impact the other “side”
+
+  - **Increase the Scalability of the solution** to manage high number
+    of requests
 
 # Issues experienced and their resolution
+
+This section describes the main issues we faced when building the POC.
 
   - **Issue:** Unable to install on a standard laptop all the
     dependencies needed to train YOLO V.4, mainly due to issues with
@@ -448,7 +460,7 @@ to improve the current POC.
             
               - Both the above are needed
 
-  - **Issue:** We used P2.xlarge EC2 instances to train YOLO v.4.
+  - **Issue:** We used P2.xlarge EC2 instances to train YOLO v.4,
     P2.xlarge are the cheapest P-type EC2 instances, equipped with GPU.
     Given the cost of on-demand instances (more than 1 $ per hour) and
     the fact that the training may last more than 2 days, we used Spot
@@ -462,29 +474,30 @@ to improve the current POC.
 
   - **Issue:** Calls to the flask API running on the docker container
     seems not to hit the flask API itself, even though the docker
-    container is run with the flag \`\`\` -p 8090:8090 \`\`\`
+    container is run with the flag ``` -p 8090:8090 ```
     
       - **Resolution:** change the flask\_api.py from:
         
-          - \`\`\` if \_\_name\_\_ == '\_\_main\_\_' :
+          - ``` if \_\_name\_\_ == '\_\_main\_\_' :
             
-            app.run(debug = True) \`\`\`
+            app.run(debug = True) 
+            ```
             
             TO:
         
-          - \`\`\` if \_\_name\_\_ == '\_\_main\_\_' :
+          - ``` if \_\_name\_\_ == '\_\_main\_\_' :
             
-            app.run(host = '0.0.0.0', port = 8090, debug = True) \`\`\`
+            app.run(host = '0.0.0.0', port = 8090, debug = True) ```
 
   - **Issue**: Unable to create and upload objects from an EC2 belonging
     to account A to a non-public S3 bucket that belongs to account B
     
-      - **Resolution: **
+      - **Resolution**:
         
           - Setup an IAM role for the EC2 on account A such that grants
             access to S3 buckets, for example:
             
-              - \`\`\`
+              - ```
                 
                 {
                 
@@ -506,12 +519,12 @@ to improve the current POC.
                 
                 }
                 
-                \`\`\`
+                ```
         
           - Setup a policy on the bucket of account B to allow the role
             from account A to access and operate on the bucket
         
-          - \`\`\`
+          - ```
             
             {
             
@@ -540,7 +553,7 @@ to improve the current POC.
             
             }
             
-            \`\`\`
+            ```
 
   - **Issue:** Unable to create a “working” presigned URL using a Lambda
     function of the account B for an object uploaded to an S3 bucket
@@ -551,15 +564,15 @@ to improve the current POC.
           - upload objects setting the flag 'ACL' =
             'bucket-owner-full-control', e.g.:
             
-              - \`\`\` s3\_client = boto3.client('s3')
+              - ``` s3\_client = boto3.client('s3')
             
               - s3\_client.upload\_file(fileToUpload, bucketName,
                 object\_name,
-                ExtraArgs={'ACL':'bucket-owner-full-control'}) \`\`\`
+                ExtraArgs={'ACL':'bucket-owner-full-control'}) ```
         
           - Set the bucket policy:
             
-              - \`\`\`
+              - ```
                 
                 {
                 
@@ -601,7 +614,7 @@ to improve the current POC.
                 
                 }
                 
-                \`\`\`
+                ```
 
   - **Issue**: If we trigger a detection using the original darknet.py
     and darknet\_image.py files from the official github repository, the
@@ -623,16 +636,16 @@ to improve the current POC.
   - **Issue**: when starting the docker container along with the flask
     api from the below command line
     
-    \`\`\` sudo docker run -d --rm -p 8090:8090 --gpus all -v
+    ``` sudo docker run -d --rm -p 8090:8090 --gpus all -v
     ~/exchange:/exchange asonnellini/yolo-custom-folders-flask\_v2
-    python3 darknet/flask-API/flask\_api.py \`\`\`
+    python3 darknet/flask-API/flask\_api.py ```
     
     We received an error related to missing libdarknet.so even though
     this library was already in the folder darknet/flask-API/
     
       - **Resolution**: the error is due to the fact that the working
         dir for the container is /code. This is indeed what is set in
-        the dockerfile via \`\`\` WORKDIR /code \`\`\` .
+        the dockerfile via ``` WORKDIR /code ``` .
         
         Consequently when running the container from command line,
         docker looks for the library libdarknet.so in the working dir,
@@ -643,13 +656,26 @@ to improve the current POC.
         
         RUN cp /code/darknet/libdarknet.so /code/
 
+  - **Issue:** The presigned url that were generated from an EC2 were
+    not working, meaning that when used an error referring to an invalid
+    authentication method was raised.
+    
+      - **Resolution:** to solve the issue we generated URL using a
+        Lambda function. We suspect the issue was due to the fact that
+        the key were generated by an EC2 running on US, while they were
+        used by European users. We believe that the authentication
+        mechanism used for US users is not compatible with the one for
+        European users. We did not have the chance to check it
+
   - **Issue**: Unable to upload and download images from a private S3
     bucket using a web front-end that communicates with an AWS API GTW +
     Lambda function to obtain pre-signed URL.  
     Every time we send from the web front-end a POST or GET call to the
-    API GTW, we get errors related to CORS policies. If we do the same
-    from Postman everything works fine
+    API GTW, we get errors related to CORS policies.
     
-      - **Resolution**: issue still outstanding; unfortunately this
-        issue prevented us from deploying a more advanced architecture
-        as explained in the section
+    If we do the same from Postman everything works fine.
+    
+      - **Resolution**: This issue is still outstanding and is what is
+        currently preventing us from being able to upgrade the
+        architecture to the one described in the Section Planned
+        Improvement

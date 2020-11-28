@@ -8,7 +8,7 @@
     1.  See example
         Docker-Yolo/VGGvsYolo-Annotations/VGGAnnotation-example.csv
 
-3.  Run the script VGG-2-Yolo-annotations.ipynb to generate the:
+3.  Run the script VGG-2-Yolo-annotations_v2.ipynb to generate the:
     
     2.  \<imageId\>.txt file with YOLO Compatible annotations for
         \<imageId\>.png
@@ -53,9 +53,9 @@
     
       - E.g. “quick-dirty” solution
     
-      - \>\> curl -fsSL https://get.docker.com -o get-docker.sh
+      - ``` curl -fsSL https://get.docker.com -o get-docker.sh ```
     
-      - \>\> sudo sh get-docker.sh
+      - ``` sudo sh get-docker.sh ```
 
 3.  Create on the EC2 a folder:
     
@@ -71,11 +71,11 @@
 
   - From this folder run (note the dot at the end of the command)
     
-      - \>\> docker build -t \<container-name\> .
+      - ``` docker build -t <container-name> . ```
 
   - For example (note the dot at the end of the command)
     
-      - \>\> docker build -t yolo-container .
+      - ``` docker build -t yolo-container . ```
 
   - The final result will be:
 
@@ -84,14 +84,13 @@
 4.  Optionally you can tag your container and push it to your Docker
     repository
     
-      - \>\> docker tag yolo-container
-        \<docker-account-name\>/\<custom-image-name\>
+      - ``` docker tag yolo-container   <docker-account-name>/<custom-image-name> ```
     
-      - \>\> docker login
+      - ``` docker login ```
         
           - Type your user and then the pwd
     
-      - \>\> docker push \<docker-account-name\>/\<custom-image-name\>
+      - ``` docker push <docker-account-name>/<custom-image-name> ```
 
 # Run the Docker Image with Yolo
 
@@ -128,11 +127,11 @@
       - Public IP: make sure to be able to SSH into the machine
     
       - Execute the User Data Script
-        Docker-Yolo/ec2-User-Script-for-Yolo.sh
+        Docker-Yolo/ec2-User-Script-for-Yolo-training.sh
         
           - Note: we are assuming that a docker image with YOLO named is
             available in one Docker repository – the script refers
-            specifically to the image asonnellini/yolo-custom-folders,
+            specifically to the image asonnellini/yolo-custom-folders-flask_v2,
             you should change it to point it to the image of your
             interest
     
@@ -149,8 +148,7 @@
   - Run the Docker image executing the following command – see the next
     point for the detached mode:
     
-      - \>\> sudo docker run -it -p 80:8090 --gpus all -v
-        ~/exchange:/exchange asonnellini/yolo-custom-folders
+      - ``` sudo docker run -it -p 80:8090 --gpus all -v    ~/exchange:/exchange asonnellini/yolo-custom-folders-flask_v2 ```
         
           - Given that the container was run with -i and -t, you can
             detach from it and leave it running using the CTRL-p CTRL-q
@@ -158,9 +156,9 @@
             
               - To re-attach/re-enter the container:
                 
-                  - \>\> sudo docker attach ddc081f03827
+                  - ``` sudo docker attach ddc081f03827 ```
                 
-                  - \>\> sudo docker container ps
+                  - ``` sudo docker container ps ```
         
           - \--gpus all : ensures the Docker Image can use all the gpus
             and that the folder ~/exchange on the EC2 is shared with the
@@ -180,13 +178,13 @@
     
       - Download some weights for the coco.dataset:
         
-          - \>\> wget
-            https://github.com/AlexeyAB/darknet/releases/download/darknet\_yolo\_v3\_optimal/yolov4.weights
+          - ``` wget
+            https://github.com/AlexeyAB/darknet/releases/download/darknet\_yolo\_v3\_optimal/yolov4.weights ```
     
       - Run a test detection
         
-          - \>\>\>\> ./darknet detector test ./cfg/coco.data
-            ./cfg/yolov4.cfg ./yolov4.weights data/dog.jpg -thresh 0.25
+          - `````` ./darknet detector test ./cfg/coco.data
+            ./cfg/yolov4.cfg ./yolov4.weights data/dog.jpg -thresh 0.25 ```
 
 # Train YOLO
 
@@ -198,17 +196,14 @@ From “inside” the Docker Image:
   - Start a run executing for example the script
     /code/darknet/obj-config-files/Yolo-Train.sh:
     
-      - \>\> /code/darknet/darknet detector train
-        /code/darknet/obj-config-files/obj.data
-        /code/darknet/cfg/yolo-obj.cfg /code/darknet/yolov4.conv.137
-        -dont\_show -mjpeg\_port 8090 -map
+      - ``` /code/darknet/darknet detector train  /code/darknet/obj-config-files/obj.data      /code/darknet/cfg/yolo-obj.cfg /code/darknet/yolov4.conv.137 -dont\_show -mjpeg\_port 8090 -map ```
 
   - During the training YOLO will dump in the folder /exchange/backup
     the weights every 100 iterations
 
   - You can check the GPU memory consumption running:
     
-      - \>\> nvidia-smi
+      - ``` nvidia-smi ```
 
 # Predict with YOLO
 
@@ -223,26 +218,21 @@ From “inside” the Docker image:
   - Run the below command – the output of the detection will be dumped
     in /exchange/result.txt
     
-      - \>\> /code/darknet/darknet detector test
-        /code/darknet/obj-config-files/obj.data
-        /code/darknet/cfg/yolo-obj.cfg
-        /exchange/backup/yolo-obj\_last.weights
-        /exchange/images/9732\_AnteroPosterior\_unspecified.png -thresh
-        0.25 -ext\_output \> /exchange/result.txt
+      - ``` /code/darknet/darknet detector test /code/darknet/obj-config-files/obj.data /code/darknet/cfg/yolo-obj.cfg /exchange/backup/yolo-obj\_last.weights /exchange/images/9732\_AnteroPosterior\_unspecified.png -thresh 0.25 -ext\_output > /exchange/result.txt ```
 
 # Integrate YOLO with a FLASK API and trigger the detection via POST
 
 To integrate flask in the docker image created for yolo, we created a
-new docker image asonnellini/yolo-custom-folders**-flask.**
+new docker image asonnellini/yolo-custom-folders**-flask_v2.**
 
-The Docker image asonnellini/yolo-custom-folders**-flask** is identical
+The Docker image asonnellini/yolo-custom-folders**-flask_v2** is identical
 to asonnellini/yolo-custom-folders but includes a flask API.
 
 To use it:
 
-  - Download the docker image asonnellini/yolo-custom-folders-flask
+  - Download the docker image asonnellini/yolo-custom-folders-flask_v2
     
-      - \>\> docker pull asonnellini/yolo-custom-folders-flask
+      - ``` docker pull asonnellini/yolo-custom-folders-flask_v2 ```
 
   - Start an EC2 instance according to the below template:
     
@@ -268,9 +258,7 @@ To use it:
 
   - Run the docker container with the following command:
     
-      - \>\> sudo docker run -d --rm -p 8090:8090 --gpus all -v
-        ~/exchange:/exchange yolo-custom-folders-flask python3
-        darknet/flask-API/flask\_api.py
+      - ``` sudo docker run -d --rm -p 8090:8090 --gpus all -v    ~/exchange:/exchange yolo-custom-folders-flask python3 darknet/flask-API/flask\_api.py ```
     
       - The above command
         
@@ -314,13 +302,13 @@ To use it:
           - Run a curl command toward the flask API endpoint / passing
             information in a json, e.g.:
             
-              - \>\> curl -H "Content-Type: application/json" -X POST -d
+              - ``` curl -H "Content-Type: application/json" -X POST -d 
                 '{"bucketName": "yolo-project", "folderBucket":
                 "toDetect", "imgFileName":
                 "1998\_AnteroPosterior\_supine.png",
                 "bucketDestination": "yolo-project", "bucketDestFolder":
-                "detected"}' http://\<private IP of EC2\>:8090/
-                
+                "detected"}' http://<private IP of EC2>:8090/ 
+                ```
                 Where for the json all the following mandatory
                 attributes must be specified:
             
@@ -345,6 +333,7 @@ To use it:
         reply to the POST message with details about the path where the
         post-detection image is stored on an S3 :
         
+        ```
         { "Outcome": "OK",
         
         "destBucket": "yolo-project",
@@ -354,13 +343,14 @@ To use it:
         "destFileName": "123-det\_1998\_AnteroPosterior\_supine.png"
         
         }
+        ```
 
 Note: at this stage the detection is not performed for real, the flask
 API currently mimics just the mechanism of getting an image from an S3
 bucket and copy another image on another S3 bucket as per the
 information passed via the POST command.
 
-The new image asonnellini/yolo-custom-folders-flask was created starting
+The new image asonnellini/yolo-custom-folders-flask_v2 was created starting
 from the same dockerfile used for image asonnellini/yolo-custom-folders,
 adding to it the following:
 

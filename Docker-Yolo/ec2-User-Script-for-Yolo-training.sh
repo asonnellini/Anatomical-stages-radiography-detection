@@ -22,7 +22,7 @@ sudo chmod -R 777 /home/ubuntu/exchange/
 sudo touch /home/ubuntu/run-Yolo-Docker.sh
 sudo chmod -R 777 /home/ubuntu/run-Yolo-Docker.sh
 # Create the script to run the docker image loading the folder "exchange" as a volume on the container
-echo "sudo docker run -it -p 8090:8090 --gpus all -v ~/exchange:/exchange asonnellini/yolo-custom-folders-flask" >> /home/ubuntu/run-Yolo-Docker.sh
+echo "sudo docker run -it -p 8090:8090 --gpus all -v ~/exchange:/exchange asonnellini/yolo-custom-folders-flask_v2" >> /home/ubuntu/run-Yolo-Docker.sh
 sudo chmod +x /home/ubuntu/run-Yolo-Docker.sh
 # Download the docker images for yolo training + flask
 sudo docker pull asonnellini/yolo-custom-folders-flask_v2
