@@ -37,7 +37,7 @@ The user can easily use the application following the below procedure:
     in case we stopped the EC2 that performs the detection)
 
   - Upload a radiography image (accepted formats so far are jpg, jpeg,
-    png – dicom will be supported shortly)
+    png – dicom will be supported in future versions)
 
   - Click on the ***Run Detection*** button
 
@@ -289,7 +289,7 @@ The Dataset we used to train Yolo is characterized by the following:
     Application: 939 images, splitted in train (75%) and test set (25%)
     – all of them were manually annonated
 
-  - **Image file format**: PNG – we plan to support Dicom shortly
+  - **Image file format**: PNG – we plan to build a pipeline to support Dicom in next releases
 
   - **Dataset preprocessing and annotations:** given the
     non-standardized nature of the images of our dataset, we had to
@@ -395,7 +395,7 @@ to enhance the current POC.
 
 2)  Apply **Data Augmentation** to the training set
 
-3)  **Use DICOM image format** to take advantage of their metadata as
+3)  **Build a pipeline to use DICOM images** to take advantage of their metadata as
     well, for example to **extrapolate from the coordinate of the
     bounding boxes on the image the physical coordinates of the patient
     anatomical sections** in the reference system of the CT – this will
