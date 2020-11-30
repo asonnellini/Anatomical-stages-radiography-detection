@@ -327,6 +327,8 @@ iterations up to 8409 – the first part of the plot is not available because du
 the training the P2 instance was terminated by AWS causing the loss of
 the plot.
 
+We eventually evaluated the quality of our model relying on the mAP metric, and selected the weights that resulted in the best mAP.
+
 ![](.//media/image8.png)
 
 ### Architecture
