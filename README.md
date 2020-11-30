@@ -408,7 +408,7 @@ to enhance the current POC.
 
 4)  **Additional post-processing logic:** We can implement an
     a-posteriori logic to identify the diaphragm as the section of the
-    body obtained by the intersection, as shown by the red box in the
+    body obtained by the intersection of the abdomen and the chest, as shown by the red box in the
     image below
 
 ![](.//media/image14.png)
