@@ -327,6 +327,8 @@ iterations up to 8409 – the first part of the plot is not available because du
 the training the P2 instance was terminated by AWS causing the loss of
 the plot.
 
+We eventually evaluated the quality of our model relying on the mAP metric over our test set, and selected the weights that led to the best mAP.
+
 ![](.//media/image8.png)
 
 ### Architecture
@@ -406,7 +408,7 @@ to enhance the current POC.
 
 4)  **Additional post-processing logic:** We can implement an
     a-posteriori logic to identify the diaphragm as the section of the
-    body obtained by the intersection, as shown by the red box in the
+    body obtained by the intersection of the abdomen and the chest, as shown by the red box in the
     image below
 
 ![](.//media/image14.png)
