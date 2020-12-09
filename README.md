@@ -32,7 +32,7 @@ documentation.
 
 The user can easily use the application following the below procedure:
 
-  - Open a browser and go [to this link](http://18.188.16.8:5000/) (the
+  - Open a browser and go [to this link](http://automatic-detection.html/) (the
     application might not be available or not performing the detection
     in case we stopped the EC2 that performs the detection)
 
