@@ -1,4 +1,4 @@
-# Fontend application
+# Frontend application
 
 ## Usage
 
